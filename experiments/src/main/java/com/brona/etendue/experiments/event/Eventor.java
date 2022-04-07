@@ -18,6 +18,7 @@ public class Eventor {
 
         final List<int[]> points = new ArrayList<>();
         final List<int[][]> lines = new ArrayList<>();
+        lines.add(new int[][]{ new int[]{0,0}, new int[]{100, 100} });
 
 
         Canvas canvas = new Canvas() {
@@ -49,11 +50,17 @@ public class Eventor {
 
             @Override
             public void mousePressed(MouseEvent e) {
+                if (e.getButton() != MouseEvent.BUTTON1)
+                    return;
+
                 lastPoint = new int[]{ e.getX(), e.getY() };
             }
 
             @Override
             public void mouseDragged(MouseEvent e) {
+                if (lastPoint == null)
+                    return;
+
                 int[] point = new int[]{ e.getX(), e.getY() };
                 lines.add(new int[][]{ lastPoint, point });
 
@@ -70,9 +77,11 @@ public class Eventor {
 
             @Override
             public void mouseReleased(MouseEvent e) {
+                if (e.getButton() != MouseEvent.BUTTON1)
+                    return;
+
                 if (initial) {
                     points.add(lastPoint);
-
                     canvas.repaint(
                             lastPoint[0] - 5,
                             lastPoint[1] - 5,
@@ -81,10 +90,10 @@ public class Eventor {
                     );
                 } else {
                     mouseDragged(e);
-
                     initial = true;
-                    lastPoint = null;
                 }
+
+                lastPoint = null;
             }
 
         };
