@@ -5,8 +5,9 @@ import java.awt.*;
 @FunctionalInterface
 public interface Painter {
 
-    Painter NOOP = g -> {};
+    void paint(Graphics2D g);
 
-    void paint(Graphics g);
+
+    Painter NOOP = g -> {};
 
 }

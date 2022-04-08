@@ -19,7 +19,21 @@ public class PainterCanvas extends Canvas {
     @Override
     public void paint(Graphics g) {
         super.paint(g);
-        painters.forEach(painter -> painter.paint(g));
+
+        if (g instanceof Graphics2D) {
+            Graphics2D g2d = (Graphics2D) g;
+            g2d.setRenderingHint(
+                    RenderingHints.KEY_ANTIALIASING,
+                    RenderingHints.VALUE_ANTIALIAS_ON
+            );
+
+            painters.forEach(painter -> painter.paint(g2d));
+
+            g2d.setRenderingHint(
+                    RenderingHints.KEY_ANTIALIASING,
+                    RenderingHints.VALUE_ANTIALIAS_OFF
+            );
+        }
     }
 
 }
