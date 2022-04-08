@@ -18,7 +18,6 @@ public class Eventor {
 
         final List<int[]> points = new ArrayList<>();
         final List<int[][]> lines = new ArrayList<>();
-        lines.add(new int[][]{ new int[]{0,0}, new int[]{100, 100} });
 
 
         Canvas canvas = new Canvas() {
