@@ -1,7 +1,7 @@
 package com.brona.etendue.internal;
 
 import com.brona.etendue.visualization.AppWindow;
-import com.brona.etendue.visualization.PainterCanvas;
+import com.brona.etendue.visualization.PainterPanel;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -12,9 +12,10 @@ import java.util.ArrayList;
 public class App extends MouseAdapter implements Runnable {
 
     protected final AppWindow window;
-    protected final PainterCanvas canvas;
+    protected final PainterPanel canvas;
 
     protected boolean[] mouseButtons;
+    protected boolean shouldStartNew;
 
     protected final CoordinateConverter coordinateConverter;
 
@@ -28,6 +29,7 @@ public class App extends MouseAdapter implements Runnable {
         canvas = window.getCanvas();
 
         mouseButtons = new boolean[]{ false, false };
+        shouldStartNew = true;
 
         coordinateConverter = CoordinateConverter.INVERSED_Y;
 
@@ -42,6 +44,8 @@ public class App extends MouseAdapter implements Runnable {
     }
 
     public void paint(Graphics2D g) {
+
+        g.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
 
         if (lines.size() > 0) {
             g.setPaint(Color.black);
@@ -117,10 +121,11 @@ public class App extends MouseAdapter implements Runnable {
         } else if (ray[1] == null) {
             ray[1] = point;
             canvas.repaint();
-        } else if (lines.size() == 0 || e.getButton() == MouseEvent.BUTTON3) {
+        } else if (shouldStartNew || e.getButton() == MouseEvent.BUTTON3) {
             ArrayList<double[]> line = new ArrayList<>();
             line.add(point);
             lines.add(line);
+            shouldStartNew = false;
         } else {
             ArrayList<double[]> lastLine = lines.get(lines.size() - 1);
             double[] origin = lastLine.get(lastLine.size() - 1 );
@@ -162,6 +167,8 @@ public class App extends MouseAdapter implements Runnable {
 
         if (ray[1] == null || (!mouseButtons[0] && !mouseButtons[1]))
             return;
+
+        shouldStartNew = true;
 
         double[] point = coordinateConverter.toSimulationCoords( new int[]{ e.getX(), e.getY() } );
         ArrayList<double[]> lastLine = lines.get(lines.size() - 1);

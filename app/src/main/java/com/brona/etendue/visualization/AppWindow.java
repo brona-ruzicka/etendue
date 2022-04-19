@@ -6,7 +6,7 @@ import java.awt.*;
 public class AppWindow extends JFrame {
 
     protected final AppToolbar toolbar;
-    protected final PainterCanvas canvas;
+    protected final PainterPanel canvas;
 
     public AppWindow(String name, int width, int height) {
         super(name);
@@ -19,12 +19,12 @@ public class AppWindow extends JFrame {
         this.toolbar = new AppToolbar();
         pane.add(toolbar, BorderLayout.PAGE_START);
 
-        this.canvas = new PainterCanvas();
+        this.canvas = new PainterPanel();
         pane.add(canvas, BorderLayout.CENTER);
     }
 
 
-    public PainterCanvas getCanvas() {
+    public PainterPanel getCanvas() {
         return canvas;
     }
 
