@@ -5,15 +5,15 @@ import java.awt.*;
 
 public class AppToolbar extends JPanel {
 
-    protected final AppButton clear;
+    protected final AppButton clearButton;
 
     public AppToolbar() {
         this.setLayout(new FlowLayout(FlowLayout.LEADING));
 
-        this.add(this.clear = new AppButton("Clear"));
+        this.add(this.clearButton = new AppButton("Clear"));
     }
 
-    public AppButton getClear() {
-        return clear;
+    public AppButton getClearButton() {
+        return clearButton;
     }
 }

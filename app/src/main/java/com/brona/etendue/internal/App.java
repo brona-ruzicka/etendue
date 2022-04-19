@@ -14,7 +14,6 @@ public class App extends MouseAdapter implements Runnable {
     protected final AppWindow window;
     protected final PainterCanvas canvas;
 
-    protected final int[] mousePosition;
     protected boolean[] mouseButtons;
 
     protected final CoordinateConverter coordinateConverter;
@@ -28,7 +27,6 @@ public class App extends MouseAdapter implements Runnable {
         window = new AppWindow(name, width, height);
         canvas = window.getCanvas();
 
-        mousePosition = new int[]{ -1, -1 };
         mouseButtons = new boolean[]{ false, false };
 
         coordinateConverter = CoordinateConverter.INVERSED_Y;
@@ -36,14 +34,12 @@ public class App extends MouseAdapter implements Runnable {
         lines = new ArrayList<>();
         ray = new double[][]{ null, null };
 
-
         window.getCanvas().addPainter(this::paint);
         window.getCanvas().addMouseListener(this);
         window.getCanvas().addMouseMotionListener(this);
-        window.getToolbar().getClear().addActionListener(this::clear);
+        window.getToolbar().getClearButton().addActionListener(this::clear);
 
     }
-
 
     public void paint(Graphics2D g) {
 
@@ -72,24 +68,13 @@ public class App extends MouseAdapter implements Runnable {
             int[] coordA = coordinateConverter.toScreenCoords(ray[0]);
             int[] coordB = coordinateConverter.toScreenCoords(ray[1]);
 
-            g.drawLine(coordA[0], coordA[1], coordB[0], coordB[1]);
+            int[] boundsB = Util.getOffscreenPoints(new int[][] { coordA, coordB })[1];
+            g.drawLine(coordA[0], coordA[1], boundsB[0], boundsB[1]);
+
+            g.fillOval(coordA[0] - 1, coordA[1] - 1, 3, 3);
+            g.fillOval(coordB[0] - 1, coordB[1] - 1, 3, 3);
+
         }
-
-        if ((ray[0] != null && ray[1] == null) || lines.size() > 0) {
-            g.setPaint(Color.gray);
-
-            int[] origin;
-            if (ray[1] == null) {
-                origin = coordinateConverter.toScreenCoords(ray[0]);
-            } else {
-                ArrayList<double[]> lastLine = lines.get(lines.size() - 1);
-                origin = coordinateConverter.toScreenCoords(lastLine.get(lastLine.size() - 1));
-            }
-
-            g.drawLine(origin[0], origin[1], mousePosition[0], mousePosition[1]);
-        }
-
-
 
     }
 
@@ -124,18 +109,14 @@ public class App extends MouseAdapter implements Runnable {
                 return;
         }
 
-
-        repaintPreview();
-
         double[] point = coordinateConverter.toSimulationCoords( new int[]{ e.getX(), e.getY() } );
 
         if (ray[0] == null) {
             ray[0] = point;
+            canvas.repaint();
         } else if (ray[1] == null) {
             ray[1] = point;
-
-            repaintLine(ray[0], ray[1]);
-
+            canvas.repaint();
         } else if (lines.size() == 0 || e.getButton() == MouseEvent.BUTTON3) {
             ArrayList<double[]> line = new ArrayList<>();
             line.add(point);
@@ -148,8 +129,6 @@ public class App extends MouseAdapter implements Runnable {
             repaintLine(origin, point);
         }
 
-        updatePreview(e);
-        repaintPreview();
     }
 
     @Override
@@ -170,19 +149,12 @@ public class App extends MouseAdapter implements Runnable {
                 return;
         }
 
-
-        repaintPreview();
-
         double[] point = coordinateConverter.toSimulationCoords( new int[]{ e.getX(), e.getY() } );
-
 
         if (ray[1] == null && (ray[0][0] != point[0] || ray[0][1] != point[1])) {
             ray[1] = point;
-            repaintLine(ray[0], ray[1]);
+            canvas.repaint();
         }
-
-        updatePreview(e);
-        repaintPreview();
     }
 
     @Override
@@ -191,9 +163,6 @@ public class App extends MouseAdapter implements Runnable {
         if (ray[1] == null || (!mouseButtons[0] && !mouseButtons[1]))
             return;
 
-
-        repaintPreview();
-
         double[] point = coordinateConverter.toSimulationCoords( new int[]{ e.getX(), e.getY() } );
         ArrayList<double[]> lastLine = lines.get(lines.size() - 1);
         double[] origin = lastLine.get(lastLine.size() - 1 );
@@ -201,35 +170,6 @@ public class App extends MouseAdapter implements Runnable {
 
         repaintLine(origin, point);
 
-        updatePreview(e);
-        repaintPreview();
-    }
-
-    @Override
-    public void mouseMoved(MouseEvent e) {
-        repaintPreview();
-        updatePreview(e);
-        repaintPreview();
-    }
-
-    protected void repaintPreview() {
-        if (!( (ray[0] != null && ray[1] == null) || lines.size() > 0 ))
-            return;
-
-        int[] origin;
-        if (ray[1] == null) {
-            origin = coordinateConverter.toScreenCoords(ray[0]);
-        } else {
-            ArrayList<double[]> lastLine = lines.get(lines.size() - 1);
-            origin = coordinateConverter.toScreenCoords(lastLine.get(lastLine.size() - 1));
-        }
-
-        canvas.repaint(
-                Math.min(origin[0], mousePosition[0]) - 5,
-                Math.min(origin[1], mousePosition[1]) - 5,
-                Math.abs(origin[0] - mousePosition[0]) + 10,
-                Math.abs(origin[1] - mousePosition[1]) + 10
-        );
     }
 
     protected void repaintLine(double[] pointA, double[] pointB) {
@@ -243,12 +183,6 @@ public class App extends MouseAdapter implements Runnable {
                 Math.abs(coordA[1] - coordB[1]) + 10
         );
     }
-
-    protected void updatePreview(MouseEvent e) {
-        mousePosition[0] = e.getX();
-        mousePosition[1] = e.getY();
-    }
-
 
     @Override
     public void run() {
