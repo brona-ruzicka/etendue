@@ -50,6 +50,21 @@ public final class Vectors {
     }
 
 
+    public static double squaredLength(@NotNull double[] vector) {
+        double result = 0d;
+
+        for (double v : vector) {
+            result += v * v;
+        }
+
+        return result;
+    }
+
+    public static double length(@NotNull double[] vector) {
+        return Math.sqrt(squaredLength(vector));
+    }
+
+
     public static double[] plus(@NotNull double[] vectorA, @NotNull double[] vectorB) {
         double[] dest = vN(vectorA.length);
         internalPlus(vectorA, vectorB, dest);

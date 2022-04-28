@@ -1,5 +1,7 @@
 package com.brona.etendue.internal;
 
+import com.brona.etendue.simulation.Intersections;
+import com.brona.etendue.simulation.Vectors;
 import com.brona.etendue.visualization.AppWindow;
 import com.brona.etendue.visualization.PainterPanel;
 
@@ -8,6 +10,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.Objects;
+import java.util.stream.Stream;
 
 public class App extends MouseAdapter implements Runnable {
 
@@ -31,7 +36,7 @@ public class App extends MouseAdapter implements Runnable {
         mouseButtons = new boolean[]{ false, false };
         shouldStartNew = true;
 
-        coordinateConverter = CoordinateConverter.INVERSED_Y;
+        coordinateConverter = CoordinateConverter.INVERTED_Y;
 
         lines = new ArrayList<>();
         ray = new double[][]{ null, null };
@@ -72,8 +77,11 @@ public class App extends MouseAdapter implements Runnable {
             int[] coordA = coordinateConverter.toScreenCoords(ray[0]);
             int[] coordB = coordinateConverter.toScreenCoords(ray[1]);
 
-            int[] boundsB = Util.getOffscreenPoints(new int[][] { coordA, coordB })[1];
-            g.drawLine(coordA[0], coordA[1], boundsB[0], boundsB[1]);
+            int[] intersectionCoord = coordinateConverter.toScreenCoords(computeIntersection());
+            if (intersectionCoord == null)
+                intersectionCoord = Util.getOffscreenPoints(new int[][]{coordA, coordB})[1];
+
+            g.drawLine(coordA[0], coordA[1], intersectionCoord[0], intersectionCoord[1]);
 
             g.fillOval(coordA[0] - 1, coordA[1] - 1, 3, 3);
             g.fillOval(coordB[0] - 1, coordB[1] - 1, 3, 3);
@@ -86,6 +94,7 @@ public class App extends MouseAdapter implements Runnable {
     public void clear(ActionEvent e) {
 
         lines.clear();
+        shouldStartNew = true;
 
         ray[0] = null;
         ray[1] = null;
@@ -93,6 +102,7 @@ public class App extends MouseAdapter implements Runnable {
         window.getCanvas().repaint();
 
     }
+
 
     @Override
     public void mousePressed(MouseEvent e) {
@@ -128,10 +138,9 @@ public class App extends MouseAdapter implements Runnable {
             shouldStartNew = false;
         } else {
             ArrayList<double[]> lastLine = lines.get(lines.size() - 1);
-            double[] origin = lastLine.get(lastLine.size() - 1 );
             lastLine.add(point);
 
-            repaintLine(origin, point);
+            canvas.repaint();
         }
 
     }
@@ -172,24 +181,38 @@ public class App extends MouseAdapter implements Runnable {
 
         double[] point = coordinateConverter.toSimulationCoords( new int[]{ e.getX(), e.getY() } );
         ArrayList<double[]> lastLine = lines.get(lines.size() - 1);
-        double[] origin = lastLine.get(lastLine.size() - 1 );
         lastLine.add(point);
 
-        repaintLine(origin, point);
+        canvas.repaint();
 
     }
 
-    protected void repaintLine(double[] pointA, double[] pointB) {
-        int[] coordA = coordinateConverter.toScreenCoords(pointA);
-        int[] coordB = coordinateConverter.toScreenCoords(pointB);
 
-        canvas.repaint(
-                Math.min(coordA[0], coordB[0]) - 5,
-                Math.min(coordA[1], coordB[1]) - 5,
-                Math.abs(coordA[0] - coordB[0]) + 10,
-                Math.abs(coordA[1] - coordB[1]) + 10
-        );
+    protected double[] computeIntersection() {
+        return lines.stream()
+                .flatMap(list -> {
+                    Stream.Builder<double[][]> sections = Stream.builder();
+
+                    double[] last = list.get(0);
+                    for (int i = 1; i < list.size(); i++) {
+                        double[] current = list.get(i);
+                        sections.add(new double[][]{ last, current });
+                        last = current;
+                    }
+
+                    return sections.build();
+                })
+                .map(section -> Intersections.intersectLineLike(
+                        section[0], section[1], Intersections.LineLike.SECTION,
+                        ray[0], ray[1], Intersections.LineLike.RAY
+                ))
+                .filter(Objects::nonNull)
+                .min(Comparator.comparingDouble(
+                        intersection -> Vectors.squaredLength(Vectors.minus(intersection, ray[0]))
+                ))
+                .orElse(null);
     }
+
 
     @Override
     public void run() {

@@ -1,22 +1,30 @@
 package com.brona.etendue.internal;
 
+import org.jetbrains.annotations.Nullable;
+
 public interface CoordinateConverter {
 
-    int[] toScreenCoords(double[] simulationCoords);
+    int[] toScreenCoords(@Nullable double[] simulationCoords);
 
-    double[] toSimulationCoords(int[] screenCoords);
+    double[] toSimulationCoords(@Nullable int[] screenCoords);
 
 
-    CoordinateConverter INVERSED_Y = new CoordinateConverter() {
+    CoordinateConverter INVERTED_Y = new CoordinateConverter() {
+
         @Override
-        public int[] toScreenCoords(double[] simulationCoords) {
+        @Nullable
+        public int[] toScreenCoords(@Nullable double[] simulationCoords) {
+            if (simulationCoords == null) return null;
             return new int[]{ (int) Math.round(simulationCoords[0]), (int) -Math.round(simulationCoords[1]) };
         }
 
         @Override
-        public double[] toSimulationCoords(int[] screenCoords) {
+        @Nullable
+        public double[] toSimulationCoords(@Nullable int[] screenCoords) {
+            if (screenCoords == null) return null;
             return new double[]{ screenCoords[0], -screenCoords[1] };
         }
+
     };
 
 }
