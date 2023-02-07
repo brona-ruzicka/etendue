@@ -74,7 +74,7 @@ public class Test1 {
                 .addMembers(
                         new PointEmitter(
                                 Point2.create(100, 0),
-                                4096 * 16
+                                4096 * 64
                         )
 //                        new PointEmitter(
 //                                Point2.create(300, 0),
@@ -113,7 +113,7 @@ public class Test1 {
                 )
                 // Interactors
                 .addMembers(
-//                        new InteractingMember.Simple(PARABOLA),
+                        new InteractingMember.Simple(PARABOLA)
 //                        new InteractingMember.Simple(TRIANGLE)
                 )
                 // Detectors
@@ -134,6 +134,8 @@ public class Test1 {
 
         Scene scene = setupScene();
 
+        System.out.println(System.currentTimeMillis());
+
         List<Ray> rays = scene
                 .getEmittingMembers()
                 .stream()
@@ -141,6 +143,7 @@ public class Test1 {
                 .map(ray -> RayTracer.trace(ray, scene))
                 .collect(Collectors.toList());
 
+        System.out.println(System.currentTimeMillis());
 
         GeometryPainter rayPainter = new GeometryPainter( // Todo dont require to create intermediate geometries, aka replace with ray painter
                 new BasicStroke(1, BasicStroke.CAP_SQUARE, BasicStroke.JOIN_BEVEL)

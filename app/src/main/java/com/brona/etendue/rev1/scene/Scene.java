@@ -28,7 +28,6 @@ public class Scene implements BoundingBoxed {
     @NotNull
     protected BoundingBox boundingBox = BoundingBox.empty();
 
-
     @NotNull
     public Scene addMember(@NotNull Member member) {
         boolean added = false;
