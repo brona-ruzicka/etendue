@@ -21,7 +21,7 @@ public class Window extends JFrame {
         this.pack();
 
         this.setResizable(false);
-        this.setLocationRelativeTo(null);
+//        this.setLocationRelativeTo(null);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
 

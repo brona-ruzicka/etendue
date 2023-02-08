@@ -16,7 +16,7 @@ public class Main {
     public static void main(String[] args) {
 
         Scene scene = Scene.of(
-                Interactors.absorbing(
+                Interactors.reflecting(
                         Geometries.line(-1f, -10f, -1f, 10f)
                 ),
 
@@ -30,7 +30,7 @@ public class Main {
 
         scene.addMembers(
                 IntStream.range(0, 50).boxed()
-                        .map(i -> Emitters.point(Point2.create(0, 1f - 2f / 50 * i), 4096))
+                        .map(i -> Emitters.point(Point2.create(-0.9f, 1f - 2f / 50 * i), 3000))
                         .collect(Collectors.toList())
         );
 

@@ -160,7 +160,7 @@ public class EtendueApp implements Runnable {
 
         if (lastStart != start) return;
 
-        long maxValue = values.values().stream().max(Long::compareTo).orElse(0L);
+        long maxValue = Math.max(values.values().stream().max(Long::compareTo).orElse(0L), 1L);
 
         if (lastStart != start) return;
         synchronized (graphImageLock) {
@@ -183,7 +183,7 @@ public class EtendueApp implements Runnable {
 
                     long value = values.getOrDefault(i, 0L);
 
-                    graphics.fill(new Path2D.Float(new Rectangle2D.Float((i-0.5f)*smallestAngleStep, 0, smallestAngleStep, value), transform));
+                    graphics.fill(new Path2D.Float(new Rectangle2D.Float((i-0.6f)*smallestAngleStep, 0, 1.2f*smallestAngleStep, value), transform));
                 }
 
                 graphics.setColor(Color.BLACK);
@@ -220,7 +220,7 @@ public class EtendueApp implements Runnable {
 
         BufferedImage image = creator.create(transformer.getGraphicsSize());
         painter.paint(image,
-                new SimpleRayVisualizer().visualize(rays.stream().filter(__ -> Math.random() < 0.01f).collect(Collectors.toList()), transformer),
+                new SimpleRayVisualizer().visualize(rays.stream().filter(__ -> Math.random() < 0.0001f).collect(Collectors.toList()), transformer),
                 new ColoredSceneVisualizer().visualize(scene, transformer)
         );
 
