@@ -1,9 +1,12 @@
 package com.brona.etendue.window;
 
 
+import com.brona.etendue.math.tuple.Point2;
+import com.brona.etendue.math.tuple.Vector2;
 import com.brona.etendue.visualization.Painter;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.List;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.geom.AffineTransform;
@@ -12,7 +15,15 @@ import java.util.ArrayList;
 public class Window extends JFrame {
 
     @NotNull
-    protected final java.util.List<@NotNull com.brona.etendue.visualization.Painter> painters = new ArrayList<>();
+    protected final List<@NotNull Painter> painters = new ArrayList<>();
+
+    public Window(@NotNull String name, @NotNull Vector2 dimension) {
+        this(
+                name,
+                Math.round(dimension.getX()),
+                Math.round(dimension.getY())
+        );
+    }
 
     public Window(@NotNull String name, int width, int height) {
         super(name);
@@ -21,7 +32,7 @@ public class Window extends JFrame {
         this.pack();
 
         this.setResizable(false);
-//        this.setLocationRelativeTo(null);
+        this.setLocationRelativeTo(null);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
 
@@ -65,12 +76,6 @@ public class Window extends JFrame {
                 return;
 
             Graphics2D graphics2D = (Graphics2D) graphics;
-
-            graphics2D.setBackground(Color.WHITE);
-            graphics2D.clearRect(0, 0, this.getWidth(), this.getHeight());
-
-            graphics2D.transform(AffineTransform.getTranslateInstance(0, this.getHeight() - 1));
-            graphics2D.transform(AffineTransform.getScaleInstance(1, -1));
 
             painters.forEach(painter -> painter.paint(graphics2D));
 

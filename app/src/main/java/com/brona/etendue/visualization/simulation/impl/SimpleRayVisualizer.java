@@ -1,32 +1,69 @@
 package com.brona.etendue.visualization.simulation.impl;
 
+import com.brona.etendue.scheduling.CancelableScheduler;
 import com.brona.etendue.visualization.Painter;
 import com.brona.etendue.visualization.simulation.RayVisualizer;
 import com.brona.etendue.visualization.Transformer;
 import com.brona.etendue.data.simulation.Ray;
 import com.brona.etendue.visualization.simulation.util.RayShape;
+import lombok.*;
+import lombok.experimental.FieldDefaults;
 import org.jetbrains.annotations.NotNull;
 
 import java.awt.*;
+import java.awt.geom.AffineTransform;
 import java.util.Collection;
+import java.util.Random;
 
+@ToString
+@EqualsAndHashCode
+@RequiredArgsConstructor
+@AllArgsConstructor
+@FieldDefaults(level = AccessLevel.PROTECTED)
 public class SimpleRayVisualizer implements RayVisualizer {
 
+    public static final int DEFAULT_RATIO = 10_000;
+
     @NotNull
-    public static final Color RAY_COLOR = Color.RED;
-    public static final Stroke RAY_STROKE = new BasicStroke(1, BasicStroke.CAP_SQUARE, BasicStroke.JOIN_BEVEL);
+    public static final Color DEFAULT_COLOR = Color.RED;
+
+    @NotNull
+    public static final Stroke DEFAULT_STROKE = new BasicStroke(1, BasicStroke.CAP_SQUARE, BasicStroke.JOIN_BEVEL);
+
+
+    int displayingRatio = DEFAULT_RATIO;
+
+    @NotNull Color color = DEFAULT_COLOR;
+    @NotNull Stroke stroke = DEFAULT_STROKE;
+
+    @NotNull
+    Random random = new Random();
+
+
+    public SimpleRayVisualizer(int displayingRatio) {
+        this.displayingRatio = displayingRatio;
+    }
+
+
+
 
     @NotNull
     @Override
     public Painter visualize(@NotNull Collection<@NotNull Ray> rays, @NotNull Transformer transformer) {
         return graphics -> {
-            graphics.setColor(RAY_COLOR);
-            graphics.setStroke(RAY_STROKE);
+            AffineTransform transform = transformer.createSimulationTransform();
+
+            graphics.setColor(color);
+            graphics.setStroke(stroke);
 
             rays.stream()
-                    .map(RayShape::new)
-                    .map(transformer::transformShape)
-                    .forEach(graphics::draw);
+                    .filter(ray -> random.nextInt(displayingRatio) == 0)
+                    .forEach(ray -> {
+                        CancelableScheduler.check();
+
+                        Shape shape = Transformer.transformShape(new RayShape(ray), transform);
+                        graphics.draw(shape);
+                    });
         };
     }
 }

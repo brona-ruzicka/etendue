@@ -9,12 +9,18 @@ import com.brona.etendue.data.simulation.Intersection;
 import com.brona.etendue.data.simulation.Section;
 import com.brona.etendue.math.curve.Curve;
 import com.brona.etendue.math.geometry.Geometry;
+import com.brona.etendue.scheduling.CancelableScheduler;
+import lombok.EqualsAndHashCode;
+import lombok.RequiredArgsConstructor;
+import lombok.ToString;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+@ToString
+@EqualsAndHashCode
 public class LineOnlyIntersector implements RayIntersector {
 
     @Override
@@ -26,6 +32,7 @@ public class LineOnlyIntersector implements RayIntersector {
     }
 
     private Intersection intersect(Section section, Curve curve) {
+        CancelableScheduler.check();
 
         if (Objects.isNull(section.getDirection()))
             return null;

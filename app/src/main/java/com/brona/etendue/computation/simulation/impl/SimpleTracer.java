@@ -7,21 +7,28 @@ import com.brona.etendue.data.scene.Interactor;
 import com.brona.etendue.data.simulation.Section;
 import com.brona.etendue.computation.simulation.RayIntersector;
 import com.brona.etendue.computation.simulation.RayTracer;
-import lombok.AllArgsConstructor;
-import lombok.Value;
+import com.brona.etendue.scheduling.CancelableScheduler;
+import lombok.*;
+import lombok.experimental.FieldDefaults;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.Objects;
 
+@ToString
+@EqualsAndHashCode
 @AllArgsConstructor
+@RequiredArgsConstructor
+@FieldDefaults(level = AccessLevel.PROTECTED)
 public class SimpleTracer implements RayTracer {
 
-    public static final int MAX_INTERACTIONS = 32;
+    public static final int DEFAULT_MAX_INTERACTIONS = 32;
+
+    int maxInteractions = DEFAULT_MAX_INTERACTIONS;
 
     @NotNull
-    protected final RayIntersector intersector;
+    RayIntersector intersector;
 
     @NotNull
     @Override
@@ -31,6 +38,7 @@ public class SimpleTracer implements RayTracer {
         ray.addSection(rayPart);
 
         for (int i = 0; Objects.nonNull(rayPart.getDirection()); i++) {
+            CancelableScheduler.check();
 
             final Section finalRayPart = rayPart;
 
@@ -52,7 +60,7 @@ public class SimpleTracer implements RayTracer {
                 break;
 
             Vector2 direction = null;
-            if (i < MAX_INTERACTIONS)
+            if (i < maxInteractions)
                 direction = tuple.getInteractor().getNextDirection(rayPart, tuple.getIntersection());
 
             rayPart = new Section(tuple.getIntersection().getPoint(), direction);

@@ -4,7 +4,6 @@ import com.brona.etendue.math.tuple.Point2;
 import com.brona.etendue.math.tuple.Point3;
 import com.brona.etendue.math.tuple.Tuple3;
 import com.brona.etendue.math.tuple.Vector2;
-import com.brona.etendue.rev2.math.tuple.*;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 

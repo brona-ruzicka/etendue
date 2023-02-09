@@ -5,8 +5,7 @@ import com.brona.etendue.visualization.Painter;
 import com.brona.etendue.visualization.Transformer;
 import org.jetbrains.annotations.NotNull;
 
-@FunctionalInterface
-public interface SceneVisualizer {
+public interface EmitterVisualizer {
 
     @NotNull
     Painter visualize(@NotNull Scene scene, @NotNull Transformer transformer);

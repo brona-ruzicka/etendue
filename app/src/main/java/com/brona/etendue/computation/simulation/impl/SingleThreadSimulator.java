@@ -7,18 +7,24 @@ import com.brona.etendue.data.scene.Emitter;
 import com.brona.etendue.data.scene.Interactor;
 import com.brona.etendue.data.scene.Scene;
 import com.brona.etendue.data.simulation.Section;
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
+import lombok.experimental.FieldDefaults;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@ToString
+@EqualsAndHashCode
 @AllArgsConstructor
+@FieldDefaults(level = AccessLevel.PROTECTED)
 public class SingleThreadSimulator implements RaySimulator {
 
-    @NotNull
-    protected final RayTracer tracer;
+    @NotNull RayTracer tracer;
 
 
     @Override
