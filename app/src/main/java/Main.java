@@ -25,7 +25,7 @@ public final class Main {
                 )),
 
                 /* Emitters */
-                Emitters.rectangle(0,0,0.1f, 0.1f, 10, 10, 1000),
+                Emitters.rectangle(0,0,0.1f, 0.1f, 10, 10, 10000),
 
 
                 /* Do not zoom in too much */
