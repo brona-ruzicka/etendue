@@ -17,13 +17,13 @@ public final class Emitters {
     /** Emits single ray */
     @NotNull
     public static Emitter single(float px, float py, float vx, float vy) {
-        return new SimpleEmitter(Point2.create(px, py), Vector2.create(vx, vy));
+        return new SimpleEmitter(Point2.create(px, py), Vector2.create(vx, vy).normalize());
     }
 
     /** Emits single ray */
     @NotNull
     public static Emitter single(@NotNull Point2 origin, @NotNull Vector2 direction) {
-        return new SimpleEmitter(origin, direction);
+        return new SimpleEmitter(origin, direction.normalize());
     }
 
     /** Emits single n rays from origin in all directions */
