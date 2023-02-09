@@ -20,7 +20,7 @@ public final class Examples {
                 Emitters.point(p(0,0), 1000),
 
                 /* Do not zoom in too much */
-                Utils.extendViewBox(3)
+                Utils.extendViewBox(10)
         );
 
         EtendueApp.run(scene);
@@ -31,7 +31,7 @@ public final class Examples {
 
         Scene scene = Utils.scene(
                 /* Do not zoom in too much */
-                Utils.extendViewBox(10)
+                Utils.extendViewBox(3)
         );
 
         /* Another possible way to add to the scene */
@@ -68,7 +68,7 @@ public final class Examples {
 
     public static void main(String[] args) {
 //        example1();
-        example2();
+//        example2();
 //        example3();
     }
 

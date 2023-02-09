@@ -129,7 +129,7 @@ public class EtendueApp implements Runnable {
         rays = simulator.simulate(scene);
 
         // Update simulation image
-        RayVisualizer rayVisualizer = new SimpleRayVisualizer(200);
+        RayVisualizer rayVisualizer = new SimpleRayVisualizer();
         simulationImage.regenerate(
                 rayVisualizer.visualize(rays, transformer),
                 interactorVisualizer.visualize(scene, transformer)
