@@ -6,11 +6,12 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Map;
 
 @FunctionalInterface
 public interface EtendueComputer {
 
     @NotNull
-    Collection<@NotNull Point2> compute(@NotNull Collection<@NotNull Section> sections);
+    Map.Entry<@NotNull Float, @NotNull Collection<@NotNull Point2>> compute(@NotNull Collection<@NotNull Section> sections);
 
 }

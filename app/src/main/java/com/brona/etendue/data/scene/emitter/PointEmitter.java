@@ -30,7 +30,13 @@ public class PointEmitter implements Emitter {
     }
 
     @Override
-    public @NotNull List<@NotNull Section> getRays() {
+    public List<@NotNull Section> getRays() {
+        return PointEmitter.generateRays(origin, rayCount);
+    }
+
+
+    @NotNull
+    public static List<@NotNull Section> generateRays(@NotNull Point2 origin, int rayCount) {
         return IntStream.range(0, rayCount)
                 .boxed()
                 .map(i -> {
@@ -43,4 +49,5 @@ public class PointEmitter implements Emitter {
                 })
                 .collect(Collectors.toList());
     }
+
 }

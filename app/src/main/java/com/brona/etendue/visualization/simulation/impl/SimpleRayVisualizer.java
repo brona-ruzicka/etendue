@@ -22,7 +22,7 @@ import java.util.Random;
 @FieldDefaults(level = AccessLevel.PROTECTED)
 public class SimpleRayVisualizer implements RayVisualizer {
 
-    public static final int DEFAULT_RATIO = 10_000;
+    public static final int DEFAULT_MAX_COUNT = 100;
 
     @NotNull
     public static final Color DEFAULT_COLOR = Color.RED;
@@ -31,7 +31,7 @@ public class SimpleRayVisualizer implements RayVisualizer {
     public static final Stroke DEFAULT_STROKE = new BasicStroke(1, BasicStroke.CAP_SQUARE, BasicStroke.JOIN_BEVEL);
 
 
-    int displayingRatio = DEFAULT_RATIO;
+    int maxCount = DEFAULT_MAX_COUNT;
 
     @NotNull Color color = DEFAULT_COLOR;
     @NotNull Stroke stroke = DEFAULT_STROKE;
@@ -40,8 +40,8 @@ public class SimpleRayVisualizer implements RayVisualizer {
     Random random = new Random();
 
 
-    public SimpleRayVisualizer(int displayingRatio) {
-        this.displayingRatio = displayingRatio;
+    public SimpleRayVisualizer(int maxCount) {
+        this.maxCount = maxCount;
     }
 
 
@@ -56,8 +56,11 @@ public class SimpleRayVisualizer implements RayVisualizer {
             graphics.setColor(color);
             graphics.setStroke(stroke);
 
+            int rayCount = rays.size();
+            int displayingEveryNth = (int) Math.ceil((float) rayCount / maxCount);
+
             rays.stream()
-                    .filter(ray -> random.nextInt(displayingRatio) == 0)
+                    .filter(ray -> random.nextInt(displayingEveryNth) == 0)
                     .forEach(ray -> {
                         CancelableScheduler.check();
 

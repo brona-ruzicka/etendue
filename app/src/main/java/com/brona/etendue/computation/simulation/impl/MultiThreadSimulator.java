@@ -52,7 +52,8 @@ public class MultiThreadSimulator implements RaySimulator {
                                 Math.min(i * originsPerThread, originCount),
                                 Math.min((i+1) * originsPerThread, originCount)
                         )
-                ).map(subOrigins -> new Thread(() -> {
+                )
+                .map(subOrigins -> new Thread(() -> {
                     List<Ray> subRays = subOrigins.stream()
                             .map(origin -> tracer.trace(origin, interactors))
                             .collect(Collectors.toList());

@@ -52,16 +52,22 @@ import java.util.stream.Collectors;
 
 public class EtendueApp implements Runnable {
 
-    public static final int DEFAULT_WIDTH = 1000;
-    public static final int DEFAULT_HEIGHT = 700;
 
+    /** Actually starts the application */
     public static void run(@NotNull Scene scene) {
         new EtendueApp(scene).run();
     }
 
+    /** Actually starts the application */
     public static void run(@NotNull Scene scene, int width, int height) {
         new EtendueApp(scene, width, height).run();
     }
+
+    @NotNull
+    protected static final Color DARK_GREEN = new Color(0, 200, 0);
+
+    public static final int DEFAULT_WIDTH = 1000;
+    public static final int DEFAULT_HEIGHT = 700;
 
 
     public EtendueApp(@NotNull Scene scene) {
@@ -84,7 +90,10 @@ public class EtendueApp implements Runnable {
 
     protected Collection<Ray> rays;
     protected Collection<Section> sections;
+
     protected float xCoordinate = 0;
+    protected float etendueSum = 0;
+
 
     protected RerunHandle<?> detectionTask, etendueTask, graphTask;
 
@@ -120,7 +129,7 @@ public class EtendueApp implements Runnable {
         rays = simulator.simulate(scene);
 
         // Update simulation image
-        RayVisualizer rayVisualizer = new SimpleRayVisualizer(10_000);
+        RayVisualizer rayVisualizer = new SimpleRayVisualizer(200);
         simulationImage.regenerate(
                 rayVisualizer.visualize(rays, transformer),
                 interactorVisualizer.visualize(scene, transformer)
@@ -131,6 +140,7 @@ public class EtendueApp implements Runnable {
         etendueImage = new SimpleImageRegenerator(creator, painter, transformer.getAuxGraphicsSize());
         etendueWindow = new Window("Etendue window", transformer.getAuxGraphicsSize());
         etendueWindow.addPainter(etendueImage.toPainter());
+        etendueWindow.addPainter(graphics -> graphics.drawString(etendueSum + " m·rad", 10, 15));
 
         // Create graph window variables
         graphImage = new SimpleImageRegenerator(creator, painter, transformer.getAuxGraphicsSize());
@@ -170,21 +180,20 @@ public class EtendueApp implements Runnable {
         simulationWindow.addMouseMotionListener(listener);
 
         simulationWindow.addPainter(graphics -> {
-            graphics.setColor(new Color(0, 200, 0));
+            graphics.setColor(DARK_GREEN);
             Shape line = new Line2D.Float(xCoordinate, transformer.getMinPoint().getY(), xCoordinate, transformer.getMaxPoint().getY());
             graphics.draw(Transformer.transformShape(line, transformer.createSimulationTransform()));
         });
         simulationWindow.setTitle("Simulation window");
 
-        // Repaint the simulation window
-        simulationWindow.repaint();
-
 
         // Open all windows
+        simulationWindow.open();
         graphWindow.open();
         etendueWindow.open();
-        simulationWindow.open();
 
+        // Repaint the simulation window
+        simulationWindow.repaint();
     }
 
     @AllArgsConstructor
@@ -210,8 +219,9 @@ public class EtendueApp implements Runnable {
 
         @Override
         public void run() {
-            Collection<Point2> points = etendueComputer.compute(sections);
-            etendueImage.regenerate(etendueVisualizer.visualize(points, transformer));
+            Map.Entry<Float, Collection<Point2>> result = etendueComputer.compute(sections);
+            etendueImage.regenerate(etendueVisualizer.visualize(result.getValue(), transformer));
+            etendueSum = result.getKey();
 
             etendueWindow.repaint();
         }

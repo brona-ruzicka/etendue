@@ -46,7 +46,7 @@ public class SimpleDistributionGraphComputer implements DistributionGraphCompute
 
         CancelableScheduler.check();
 
-        Map<Float, float[]> allValues = IntStream.range(-stepCount/2, stepCount/2 + 1).boxed()
+        Map<Float, float[]> allValues = IntStream.rangeClosed(-stepCount/2, stepCount/2).boxed()
                 .collect(Collectors.toMap(
                         i -> i * smallestAngleStep,
                         i -> nonZeroValues.getOrDefault(i, EMPTY)

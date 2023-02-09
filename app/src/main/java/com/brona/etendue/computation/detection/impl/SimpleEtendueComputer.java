@@ -9,6 +9,7 @@ import lombok.experimental.FieldDefaults;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -29,7 +30,7 @@ public class SimpleEtendueComputer implements EtendueComputer {
 
     @NotNull
     @Override
-    public Collection<@NotNull Point2> compute(@NotNull Collection<@NotNull Section> sections) {
+    public Map.Entry<@NotNull Float, @NotNull Collection<@NotNull Point2>> compute(@NotNull Collection<@NotNull Section> sections) {
         float stepX = 1.2f * 2 / stepCount;
         float stepY = simulationHeight / stepCount;
 
@@ -43,7 +44,9 @@ public class SimpleEtendueComputer implements EtendueComputer {
                 })
                 .collect(Collectors.toSet());
 
-        return set;
+        float area = set.size() * stepX * stepY;
+
+        return Map.entry(area,set);
     }
 
 }

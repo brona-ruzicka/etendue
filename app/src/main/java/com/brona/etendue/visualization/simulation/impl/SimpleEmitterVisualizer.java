@@ -3,6 +3,7 @@ package com.brona.etendue.visualization.simulation.impl;
 import com.brona.etendue.data.scene.Scene;
 import com.brona.etendue.math.bounding.BoundingBox;
 import com.brona.etendue.math.tuple.Point2;
+import com.brona.etendue.math.tuple.Vector2;
 import com.brona.etendue.visualization.Painter;
 import com.brona.etendue.visualization.Transformer;
 import com.brona.etendue.visualization.simulation.EmitterVisualizer;
@@ -56,12 +57,15 @@ public class SimpleEmitterVisualizer implements EmitterVisualizer {
                     return;
                 }
 
+                Point2 otherPoint = Transformer.transformPoint(box.getMaxPoint(), transform);
+                Vector2 size = otherPoint.minus(point);
+
                 if (width == 0f) {
                     graphics.fillRect(
                             Math.round(point.getX() - 1.5f),
                             Math.round(point.getY()),
                             Math.round(3f),
-                            Math.round(height)
+                            Math.round(size.getY())
                     );
                     return;
                 }
@@ -70,7 +74,7 @@ public class SimpleEmitterVisualizer implements EmitterVisualizer {
                     graphics.fillRect(
                             Math.round(point.getX()),
                             Math.round(point.getY() - 1.5f),
-                            Math.round(width),
+                            Math.round(size.getX()),
                             Math.round(3f)
                     );
                     return;
@@ -79,8 +83,8 @@ public class SimpleEmitterVisualizer implements EmitterVisualizer {
                 graphics.fillRect(
                         Math.round(point.getX()),
                         Math.round(point.getY()),
-                        Math.round(width),
-                        Math.round(height)
+                        Math.round(size.getX()),
+                        Math.round(size.getY())
                 );
 
             });

@@ -22,6 +22,7 @@ public final class Geometries {
     }
 
 
+    /** Line between two points */
     @NotNull
     public static Geometry line(float x1, float y1, float x2, float y2) {
         return new Geometry.Simple(
@@ -30,11 +31,13 @@ public final class Geometries {
         );
     }
 
+    /** Line between two points */
     @NotNull
     public static Geometry line(@NotNull Point2 p1, @NotNull Point2 p2) {
         return Geometries.line(p1.getX(), p1.getY(), p2.getX(), p2.getY());
     }
 
+    /** A rectangle */
     @NotNull
     public static Geometry rectangle(float x1, float y1, float x2, float y2) {
 
@@ -49,11 +52,13 @@ public final class Geometries {
         return new Geometry.Simple(box, curves);
     }
 
+    /** A rectangle */
     @NotNull
     public static Geometry rectangle(@NotNull Point2 p1, @NotNull Point2 p2) {
         return Geometries.rectangle(p1.getX(), p1.getY(), p2.getX(), p2.getY());
     }
 
+    /** Line between multiple points */
     @NotNull
     public static Geometry polyline(float... coords) {
         if (coords.length % 2 != 0 || coords.length < 4)
@@ -68,6 +73,7 @@ public final class Geometries {
         return path.build();
     }
 
+    /** Line between multiple points */
     @NotNull
     public static Geometry polyline(@NotNull Point2... points) {
         if (points.length < 2)
@@ -79,6 +85,7 @@ public final class Geometries {
         return path.build();
     }
 
+    /** Line between multiple points */
     @NotNull
     public static Geometry polyline(@NotNull List<@NotNull Point2> points) {
         if (points.size() < 2)
@@ -90,6 +97,18 @@ public final class Geometries {
         return path.build();
     }
 
+    /**
+     * Uses the supplied formula to generate a polyline*
+     *
+     * @param xDependsOnY false - oriented upwards, true - oriented sideways
+     * @param originX where the origin for the generated points is in the simulation
+     * @param originY where the origin for the generated points is in the simulation
+     * @param min minimal parameter
+     * @param max maximal parameter
+     * @param step parameter step
+     * @param formula the formula
+     * @return A geometry
+     */
     @NotNull
     public static Geometry formula(
             boolean xDependsOnY, float originX, float originY,
@@ -111,7 +130,5 @@ public final class Geometries {
 
         return Geometries.polyline(points);
     }
-
-    // TODO More geometries
 
 }
