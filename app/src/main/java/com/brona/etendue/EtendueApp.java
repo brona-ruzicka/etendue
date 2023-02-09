@@ -6,6 +6,8 @@ import com.brona.etendue.computation.detection.RayDetector;
 import com.brona.etendue.computation.detection.impl.SimpleEtendueComputer;
 import com.brona.etendue.computation.detection.impl.SimpleDistributionGraphComputer;
 import com.brona.etendue.computation.detection.impl.SimpleRayDetector;
+import com.brona.etendue.computation.simulation.RayTracer;
+import com.brona.etendue.computation.simulation.impl.MultiThreadSimulator;
 import com.brona.etendue.scheduling.CancelableScheduler;
 import com.brona.etendue.scheduling.RerunHandle;
 import com.brona.etendue.scheduling.Schedulers;
@@ -106,13 +108,15 @@ public class EtendueApp implements Runnable {
         );
 
         // Open main window
-        simulationWindow = new Window("Simulation window", transformer.getMainGraphicsSize());
+        simulationWindow = new Window("Scene preview window", transformer.getMainGraphicsSize());
         simulationWindow.addPainter(simulationImage.toPainter());
         simulationWindow.open();
 
 
         // Simulate the scene
-        RaySimulator simulator = new SingleThreadSimulator(new SimpleTracer(new LineOnlyIntersector()));
+        RayTracer tracer = new SimpleTracer(new LineOnlyIntersector());
+//        RaySimulator simulator = new SingleThreadSimulator(tracer);
+        RaySimulator simulator = new MultiThreadSimulator(tracer, 8);
         rays = simulator.simulate(scene);
 
         // Update simulation image
@@ -149,12 +153,12 @@ public class EtendueApp implements Runnable {
         ));
 
 
-        // Ray simulation complete
-        simulationWindow.close();
-
-
         // Run detection for the first time
         detectionTask.rerun();
+
+
+        // Close so that the window can stay on top
+        simulationWindow.close();
 
         // Setup x coordinate selection
         WindowListener listener = new WindowListener(point -> {
@@ -170,13 +174,16 @@ public class EtendueApp implements Runnable {
             Shape line = new Line2D.Float(xCoordinate, transformer.getMinPoint().getY(), xCoordinate, transformer.getMaxPoint().getY());
             graphics.draw(Transformer.transformShape(line, transformer.createSimulationTransform()));
         });
+        simulationWindow.setTitle("Simulation window");
+
+        // Repaint the simulation window
         simulationWindow.repaint();
 
 
         // Open all windows
-        simulationWindow.open();
-        etendueWindow.open();
         graphWindow.open();
+        etendueWindow.open();
+        simulationWindow.open();
 
     }
 

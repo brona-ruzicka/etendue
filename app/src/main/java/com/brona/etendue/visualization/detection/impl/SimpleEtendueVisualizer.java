@@ -56,7 +56,7 @@ public class SimpleEtendueVisualizer implements EtendueVisualizer {
             graphics.setColor(supportColor);
             graphics.setStroke(supportStroke);
 
-            graphics.draw(Transformer.transformShape(new Line2D.Float(-1.2f, 0, 1.2f, 0), transform));
+            graphics.draw(Transformer.transformShape(new Line2D.Float(-2f, 0, 2f, 0), transform));
             graphics.draw(Transformer.transformShape(new Line2D.Float(0, transformer.getMinPoint().getY(), 0, transformer.getMaxPoint().getY()), transform));
         };
     }

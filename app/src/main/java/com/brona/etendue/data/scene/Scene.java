@@ -67,9 +67,4 @@ public class Scene {
         return boundingBox.createBoundingBox();
     }
 
-    @NotNull
-    public static Scene of(@NotNull Member... members) {
-        return new Scene().addMembers(members);
-    }
-
 }
