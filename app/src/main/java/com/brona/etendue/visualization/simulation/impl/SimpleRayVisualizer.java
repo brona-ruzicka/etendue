@@ -28,7 +28,7 @@ public class SimpleRayVisualizer implements RayVisualizer {
     public static final Color DEFAULT_COLOR = Color.RED;
 
     @NotNull
-    public static final Stroke DEFAULT_STROKE = new BasicStroke(1, BasicStroke.CAP_SQUARE, BasicStroke.JOIN_BEVEL);
+    public static final Stroke DEFAULT_STROKE = new BasicStroke(0.5f, BasicStroke.CAP_SQUARE, BasicStroke.JOIN_BEVEL);
 
 
     int maxCount = DEFAULT_MAX_COUNT;

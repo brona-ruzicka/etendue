@@ -8,28 +8,37 @@ import com.brona.etendue.computation.detection.impl.SimpleDistributionGraphCompu
 import com.brona.etendue.computation.detection.impl.SimpleRayDetector;
 import com.brona.etendue.computation.simulation.RayTracer;
 import com.brona.etendue.computation.simulation.impl.MultiThreadSimulator;
+import com.brona.etendue.data.detection.EtendueResult;
+import com.brona.etendue.data.detection.GraphResult;
 import com.brona.etendue.scheduling.CancelableScheduler;
 import com.brona.etendue.scheduling.RerunHandle;
 import com.brona.etendue.scheduling.Schedulers;
 import com.brona.etendue.scheduling.impl.SimpleRerunnableScheduler;
 import com.brona.etendue.scheduling.impl.AutoCancellingScheduler;
 import com.brona.etendue.scheduling.impl.WrappingScheduler;
+import com.brona.etendue.visualization.Texts;
 import com.brona.etendue.visualization.common.ImageCreator;
 import com.brona.etendue.visualization.common.ImagePainter;
 import com.brona.etendue.visualization.common.ImageRegenerator;
 import com.brona.etendue.visualization.common.impl.SimpleImageCreator;
 import com.brona.etendue.visualization.common.impl.SimpleImagePainter;
 import com.brona.etendue.visualization.common.impl.SimpleImageRegenerator;
+import com.brona.etendue.visualization.detection.EtendueGridVisualizer;
+import com.brona.etendue.visualization.detection.GraphGridVisualizer;
 import com.brona.etendue.visualization.detection.GraphVisualizer;
 import com.brona.etendue.visualization.detection.EtendueVisualizer;
+import com.brona.etendue.visualization.detection.impl.SimpleEtendueGridVisualizer;
+import com.brona.etendue.visualization.detection.impl.SimpleGraphGridVisualizer;
 import com.brona.etendue.visualization.detection.impl.SimpleGraphVisualizer;
 import com.brona.etendue.visualization.detection.impl.SimpleEtendueVisualizer;
 import com.brona.etendue.visualization.simulation.EmitterVisualizer;
 import com.brona.etendue.visualization.simulation.InteractorVisualizer;
 import com.brona.etendue.visualization.simulation.RayVisualizer;
+import com.brona.etendue.visualization.simulation.SimulationGridVisualizer;
 import com.brona.etendue.visualization.simulation.impl.ColoredInteractorVisualizer;
 import com.brona.etendue.visualization.simulation.impl.SimpleEmitterVisualizer;
 import com.brona.etendue.visualization.simulation.impl.SimpleRayVisualizer;
+import com.brona.etendue.visualization.simulation.impl.SimpleSimulationGridVisualizer;
 import com.brona.etendue.window.Window;
 import com.brona.etendue.data.simulation.Section;
 import com.brona.etendue.math.tuple.Point2;
@@ -109,11 +118,13 @@ public class EtendueApp implements Runnable {
         simulationImage = new SimpleImageRegenerator(creator, painter, transformer.getMainGraphicsSize());
         EmitterVisualizer emitterVisualizer = new SimpleEmitterVisualizer();
         InteractorVisualizer interactorVisualizer = new ColoredInteractorVisualizer();
+        SimulationGridVisualizer simulationGridVisualizer = new SimpleSimulationGridVisualizer();
 
         // Create scene image
         simulationImage.regenerate(
                 emitterVisualizer.visualize(scene, transformer),
-                interactorVisualizer.visualize(scene, transformer)
+                interactorVisualizer.visualize(scene, transformer),
+                simulationGridVisualizer.visualize(transformer)
         );
 
         // Open main window
@@ -132,7 +143,8 @@ public class EtendueApp implements Runnable {
         RayVisualizer rayVisualizer = new SimpleRayVisualizer();
         simulationImage.regenerate(
                 rayVisualizer.visualize(rays, transformer),
-                interactorVisualizer.visualize(scene, transformer)
+                interactorVisualizer.visualize(scene, transformer),
+                simulationGridVisualizer.visualize(transformer)
         );
 
 
@@ -140,7 +152,6 @@ public class EtendueApp implements Runnable {
         etendueImage = new SimpleImageRegenerator(creator, painter, transformer.getAuxGraphicsSize());
         etendueWindow = new Window("Etendue window", transformer.getAuxGraphicsSize());
         etendueWindow.addPainter(etendueImage.toPainter());
-        etendueWindow.addPainter(graphics -> graphics.drawString(etendueSum + " m·rad", 10, 15));
 
         // Create graph window variables
         graphImage = new SimpleImageRegenerator(creator, painter, transformer.getAuxGraphicsSize());
@@ -154,12 +165,14 @@ public class EtendueApp implements Runnable {
                 new SimpleRayDetector()
         ));
         etendueTask = Schedulers.rerunnableAutoCanceling(mainScheduler).execute(new EtendueTask(
-                new SimpleEtendueComputer(transformer.getSimulationSize().getY()),
-                new SimpleEtendueVisualizer()
+                new SimpleEtendueComputer(200),
+                new SimpleEtendueVisualizer(200),
+                new SimpleEtendueGridVisualizer()
         ));
         graphTask = Schedulers.rerunnableAutoCanceling(mainScheduler).execute(new GraphTask(
                 new SimpleDistributionGraphComputer(),
-                new SimpleGraphVisualizer()
+                new SimpleGraphVisualizer(),
+                new SimpleGraphGridVisualizer()
         ));
 
 
@@ -216,12 +229,30 @@ public class EtendueApp implements Runnable {
 
         EtendueComputer etendueComputer;
         EtendueVisualizer etendueVisualizer;
+        EtendueGridVisualizer etendueGridVisualizer;
 
         @Override
         public void run() {
-            Map.Entry<Float, Collection<Point2>> result = etendueComputer.compute(sections);
-            etendueImage.regenerate(etendueVisualizer.visualize(result.getValue(), transformer));
-            etendueSum = result.getKey();
+            EtendueResult result = etendueComputer.compute(sections, transformer.getSimulationSize().getY());
+            etendueImage.regenerate(
+                    etendueVisualizer.visualize(result, transformer),
+                    etendueGridVisualizer.visualize(transformer),
+                    graphics -> {
+                        Texts.drawText(
+                                graphics,
+                                transformer.getAuxGraphicsSize().getX() - 150,
+                                transformer.getAuxGraphicsSize().getY() - 40,
+                                "Etendue: " + Math.round(result.getArea() * 100) / 100f + " m·rad"
+                        );
+
+                        Texts.drawText(
+                                graphics,
+                                transformer.getAuxGraphicsSize().getX() - 150,
+                                transformer.getAuxGraphicsSize().getY() - 60,
+                                "Average: " + Math.round(result.getAverage() * 100) / 100f + " ray/px"
+                        );
+                    }
+            );
 
             etendueWindow.repaint();
         }
@@ -233,11 +264,16 @@ public class EtendueApp implements Runnable {
 
         DistributionGraphComputer graphComputer;
         GraphVisualizer graphVisualizer;
+        GraphGridVisualizer graphGridVisualizer;
+
 
         @Override
         public void run() {
-            Map<Float, float[]> values = graphComputer.compute(sections);
-            graphImage.regenerate(graphVisualizer.visualize(values, transformer));
+           GraphResult result = graphComputer.compute(sections);
+            graphImage.regenerate(
+                    graphVisualizer.visualize(result, transformer),
+                    graphGridVisualizer.visualize(result.getMaxValue(), transformer)
+            );
 
             graphWindow.repaint();
         }

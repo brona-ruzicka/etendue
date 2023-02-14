@@ -1,6 +1,7 @@
 package com.brona.etendue.computation.detection.impl;
 
 import com.brona.etendue.computation.detection.DistributionGraphComputer;
+import com.brona.etendue.data.detection.GraphResult;
 import com.brona.etendue.data.simulation.Section;
 import com.brona.etendue.scheduling.CancelableScheduler;
 import lombok.*;
@@ -9,6 +10,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
 import java.util.Map;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -27,7 +29,7 @@ public class SimpleDistributionGraphComputer implements DistributionGraphCompute
 
     @NotNull
     @Override
-    public Map<@NotNull Float, float[]> compute(@NotNull Collection<@NotNull Section> sections) {
+    public GraphResult compute(@NotNull Collection<@NotNull Section> sections) {
 
         float smallestAngleStep = (float) Math.PI / stepCount;
 
@@ -52,7 +54,28 @@ public class SimpleDistributionGraphComputer implements DistributionGraphCompute
                         i -> nonZeroValues.getOrDefault(i, EMPTY)
                 ));
 
-        return allValues;
+
+        Function<float[], Float> getMaximalFloatValue = floats -> {
+            if (floats.length == 0)
+                throw new IndexOutOfBoundsException();
+
+            float max = Float.MIN_VALUE;
+            for (float f: floats)
+                if (f > max)
+                    max = f;
+
+            return max;
+        };
+
+        float maxValue = Math.max(
+                1f,
+                allValues.values().stream()
+                        .map(getMaximalFloatValue)
+                        .max(Float::compare)
+                        .orElse(0f)
+        );
+
+        return new GraphResult(allValues, maxValue);
     }
 
 

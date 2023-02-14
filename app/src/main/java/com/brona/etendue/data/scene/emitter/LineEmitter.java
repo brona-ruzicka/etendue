@@ -14,38 +14,49 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+import java.lang.Math;
+
 @ToString
 @EqualsAndHashCode
 @AllArgsConstructor
-public class PointEmitter implements Emitter {
+public class LineEmitter implements Emitter {
 
     @NotNull
-    protected final Point2 origin;
+    protected final Point2 center;
+    protected final float length;
     protected final int rayCount;
 
 
     @Override
     public @NotNull BoundingBox getBoundingBox() {
-        return BoundingBox.point(origin);
+        return BoundingBox.create(
+                center.getX(),
+                center.getY() - length / 2,
+                center.getX(),
+                center.getY() + length / 2
+        );
     }
 
     @Override
     public @NotNull List<@NotNull Section> getRays() {
-        return PointEmitter.generateRays(origin, rayCount);
+        return LineEmitter.generateRays(center, length, rayCount);
     }
 
 
     @NotNull
-    public static List<@NotNull Section> generateRays(@NotNull Point2 origin, int rayCount) {
+    public static List<@NotNull Section> generateRays(@NotNull Point2 center, float length, int rayCount) {
+        
         return IntStream.range(0, rayCount)
                 .boxed()
                 .map(i -> {
-                    double angle = Math.PI * 2 / rayCount * i;
+                    float y = (float) ((Math.random() - 0.5) * length);
+                    //double angle = Math.PI * Math.random();
+                    double angle = Math.asin(Math.random()*2 - 1) + Math.PI / 2;
                     Vector2 vector = Vector2.create(
                             (float) Math.sin(angle),
                             (float) Math.cos(angle)
                     );
-                    return new Section(origin, vector);
+                    return new Section(Point2.create(center.getX(), y), vector);
                 })
                 .collect(Collectors.toList());
     }

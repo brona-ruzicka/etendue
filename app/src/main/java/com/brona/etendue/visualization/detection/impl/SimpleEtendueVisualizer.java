@@ -1,5 +1,6 @@
 package com.brona.etendue.visualization.detection.impl;
 
+import com.brona.etendue.data.detection.EtendueResult;
 import com.brona.etendue.math.tuple.Point2;
 import com.brona.etendue.scheduling.CancelableScheduler;
 import com.brona.etendue.visualization.Painter;
@@ -12,7 +13,6 @@ import org.jetbrains.annotations.NotNull;
 import java.awt.*;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Line2D;
-import java.util.Collection;
 
 @ToString
 @EqualsAndHashCode
@@ -21,43 +21,56 @@ import java.util.Collection;
 @FieldDefaults(level = AccessLevel.PROTECTED)
 public class SimpleEtendueVisualizer implements EtendueVisualizer {
 
+    public static final int DEFAULT_STEP_COUNT = 700;
     @NotNull
-    public static final Color DEFAULT_GRAPH_COLOR = Color.RED;
-    @NotNull
-    public static final Color DEFAULT_SUPPORT_COLOR = Color.BLACK;
+    public static final Color DEFAULT_COLOR = Color.RED;
 
     @NotNull
-    public static final Stroke DEFAULT_GRAPH_STROKE = new BasicStroke();
-    @NotNull
-    public static final Stroke DEFAULT_SUPPORT_STROKE = new BasicStroke();
+    public static final Stroke DEFAULT_STROKE = new BasicStroke();
 
 
-    @NotNull Color graphColor = DEFAULT_GRAPH_COLOR;
-    @NotNull Stroke graphStroke = DEFAULT_GRAPH_STROKE;
+    int stepCount = DEFAULT_STEP_COUNT;
 
-    @NotNull Color supportColor = DEFAULT_SUPPORT_COLOR;
-    @NotNull Stroke supportStroke = DEFAULT_SUPPORT_STROKE;
+    @NotNull Color color = DEFAULT_COLOR;
+    @NotNull Stroke stroke = DEFAULT_STROKE;
+
+
+    public SimpleEtendueVisualizer(int stepCount) {
+        this.stepCount = stepCount;
+    }
 
     @Override
-    public @NotNull Painter visualize(@NotNull Collection<Point2> points, @NotNull Transformer transformer) {
+    public @NotNull Painter visualize(@NotNull EtendueResult etendue, @NotNull Transformer transformer) {
+        float stepX = (float) Math.ceil(transformer.getAuxGraphicsSize().getX() / stepCount);
+        float stepY = (float) Math.ceil(transformer.getAuxGraphicsSize().getY() / stepCount);
+
         return graphics -> {
             AffineTransform transform = transformer.createEtendueTransform();
 
-            graphics.setColor(graphColor);
-            graphics.setStroke(graphStroke);
+            graphics.setStroke(stroke);
 
-            points.forEach(point -> {
+            etendue.getPoints().forEach((point, count) -> {
                 CancelableScheduler.check();
 
-                point = Transformer.transformPoint(point, transform);
-                graphics.fillRect(Math.round(point.getX()), Math.round(point.getY()), 1, 1);
+                float[] rgb = color.getRGBComponents(null);
+                float intensity = 1 - count / etendue.getMax();
+                Color lightened = new Color(
+                        rgb[0] + (1 - rgb[0]) * intensity,
+                        rgb[1] + (1 - rgb[1]) * intensity,
+                        rgb[2] + (1 - rgb[2]) * intensity
+                );
+
+                Point2 graphicsPoint = Transformer.transformPoint(point, transform);
+
+                graphics.setColor(lightened);
+                graphics.fillRect(
+                        Math.round(graphicsPoint.getX() - stepX/2),
+                        Math.round(graphicsPoint.getY() - stepY/2),
+                        Math.round(stepX),
+                        Math.round(stepY)
+                );
             });
 
-            graphics.setColor(supportColor);
-            graphics.setStroke(supportStroke);
-
-            graphics.draw(Transformer.transformShape(new Line2D.Float(-2f, 0, 2f, 0), transform));
-            graphics.draw(Transformer.transformShape(new Line2D.Float(0, transformer.getMinPoint().getY(), 0, transformer.getMaxPoint().getY()), transform));
         };
     }
 

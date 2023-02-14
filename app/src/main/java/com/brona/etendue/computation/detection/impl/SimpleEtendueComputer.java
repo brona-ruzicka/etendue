@@ -1,6 +1,7 @@
 package com.brona.etendue.computation.detection.impl;
 
 import com.brona.etendue.computation.detection.EtendueComputer;
+import com.brona.etendue.data.detection.EtendueResult;
 import com.brona.etendue.data.simulation.Section;
 import com.brona.etendue.math.tuple.Point2;
 import com.brona.etendue.scheduling.CancelableScheduler;
@@ -22,19 +23,16 @@ public class SimpleEtendueComputer implements EtendueComputer {
 
     public static final int DEFAULT_STEP_COUNT = 700;
 
-
-    final float simulationHeight;
-
     int stepCount = DEFAULT_STEP_COUNT;
 
 
     @NotNull
     @Override
-    public Map.Entry<@NotNull Float, @NotNull Collection<@NotNull Point2>> compute(@NotNull Collection<@NotNull Section> sections) {
+    public EtendueResult compute(@NotNull Collection<@NotNull Section> sections, float simulationHeight) {
         float stepX = 1.2f * 2 / stepCount;
         float stepY = simulationHeight / stepCount;
 
-        Set<Point2> set = sections.stream()
+        Map<Point2,Long> map = sections.stream()
                 .map(section -> {
                     CancelableScheduler.check();
                     return Point2.create(
@@ -42,11 +40,13 @@ public class SimpleEtendueComputer implements EtendueComputer {
                             stepY * Math.round(section.getPoint().getY() / stepY)
                     );
                 })
-                .collect(Collectors.toSet());
+                .collect(Collectors.groupingBy(p->p,Collectors.counting()));
 
-        float area = set.size() * stepX * stepY;
+        float area = map.size() * stepX * stepY;
+        float average = map.values().stream().collect(Collectors.averagingLong(l->l)).floatValue();
+        float max = map.values().stream().max(Long::compare).orElse(1L);
 
-        return Map.entry(area,set);
+        return new EtendueResult(map, area, average, max);
     }
 
 }
