@@ -93,6 +93,22 @@ public class SimpleSimulationGridVisualizer implements SimulationGridVisualizer 
                 Texts.drawText(graphics, 5, textPoint.getY() + 3, "" + posY);
             }
 
+
+            graphics.setColor(mainColor);
+            Texts.drawText(
+                    graphics,
+                    transformer.getMainGraphicsSize().getX() - 40,
+                    23,
+                    "x [ m ]"
+            );
+            Texts.drawText(
+                    graphics,
+                    5,
+                    transformer.getMainGraphicsSize().getY() - 18,
+                    "y [ m ]"
+            );
+
+
         };
 
     }

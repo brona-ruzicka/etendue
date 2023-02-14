@@ -56,7 +56,7 @@ public class SimpleEtendueGridVisualizer implements EtendueGridVisualizer {
 
                 graphics.setColor(mainColor);
 
-                Texts.drawText(graphics, xPos + 5, 3, d + "°");
+                Texts.drawText(graphics, xPos + 5, 3, "" + d);
             }
 
 
@@ -81,6 +81,20 @@ public class SimpleEtendueGridVisualizer implements EtendueGridVisualizer {
                     continue;
                 Texts.drawText(graphics, 5, textPoint.getY() + 3, "" + posY);
             }
+
+            graphics.setColor(mainColor);
+            Texts.drawText(
+                    graphics,
+                    transformer.getAuxGraphicsSize().getX() - 40,
+                    23,
+                    "φ [ ° ]"
+            );
+            Texts.drawText(
+                    graphics,
+                    5,
+                    transformer.getAuxGraphicsSize().getY() - 18,
+                    "y [ m ]"
+            );
 
         };
     }

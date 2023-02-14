@@ -60,7 +60,7 @@ public class SimpleGraphGridVisualizer implements GraphGridVisualizer {
 
                 graphics.setColor(mainColor);
 
-                Texts.drawText(graphics, xPos + 5, 3, d + "°");
+                Texts.drawText(graphics, xPos + 5, 3, "" + d);
             }
 
 
@@ -76,8 +76,22 @@ public class SimpleGraphGridVisualizer implements GraphGridVisualizer {
                 graphics.setColor(mainColor);
                 Point2 textPoint = Point2.create(0, posY);
 
-                Texts.drawText(graphics, 5, textPoint.getY() + 3, y*10 + " %");
+                Texts.drawText(graphics, 5, textPoint.getY() + 3, "" + (y*10));
             }
+
+            graphics.setColor(mainColor);
+            Texts.drawText(
+                    graphics,
+                    transformer.getAuxGraphicsSize().getX() - 40,
+                    23,
+                    "φ [ ° ]"
+            );
+            Texts.drawText(
+                    graphics,
+                    5,
+                    transformer.getAuxGraphicsSize().getY() - 18,
+                    "N [ % ]"
+            );
 
 
         };
