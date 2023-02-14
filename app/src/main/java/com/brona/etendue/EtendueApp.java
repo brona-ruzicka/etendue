@@ -150,7 +150,7 @@ public class EtendueApp implements Runnable {
 
         // Create etendue window variables
         etendueImage = new SimpleImageRegenerator(creator, painter, transformer.getAuxGraphicsSize());
-        etendueWindow = new Window("Etendue window", transformer.getAuxGraphicsSize());
+        etendueWindow = new Window("Étendue window", transformer.getAuxGraphicsSize());
         etendueWindow.addPainter(etendueImage.toPainter());
 
         // Create graph window variables
@@ -242,7 +242,7 @@ public class EtendueApp implements Runnable {
                                 graphics,
                                 transformer.getAuxGraphicsSize().getX() - 150,
                                 transformer.getAuxGraphicsSize().getY() - 40,
-                                "Etendue: " + Math.round(result.getArea() * 100) / 100f + " m·rad"
+                                "Étendue: " + Math.round(result.getArea() * 100) / 100f + " m·rad"
                         );
 
                         Texts.drawText(

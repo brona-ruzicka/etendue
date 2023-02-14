@@ -90,7 +90,7 @@ public class SimpleGraphGridVisualizer implements GraphGridVisualizer {
                     graphics,
                     5,
                     transformer.getAuxGraphicsSize().getY() - 18,
-                    "N [ % ]"
+                    "N / Nₘₐₓ [ % ]"
             );
 
 
