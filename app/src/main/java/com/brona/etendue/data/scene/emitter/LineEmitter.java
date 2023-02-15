@@ -56,7 +56,7 @@ public class LineEmitter implements Emitter {
                             (float) Math.sin(angle),
                             (float) Math.cos(angle)
                     );
-                    return new Section(Point2.create(center.getX(), y), vector);
+                    return new Section(Point2.create(center.getX(), center.getY() + y), vector);
                 })
                 .collect(Collectors.toList());
     }
