@@ -18,8 +18,7 @@ public final class Main {
                         -20, 20, 0.1f, x -> x*x / 20
                 )),
 
-                // To keep the scene window scale
-                Emitters.line(-20, 0, 10f, 10000),
+                Emitters.line(-20, 0, 10f, 1000000),
 
                 // Zooming
                 Utils.extendViewBox(-30, -30, 70, 30)
