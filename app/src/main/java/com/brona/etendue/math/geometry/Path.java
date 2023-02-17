@@ -1,5 +1,6 @@
 package com.brona.etendue.math.geometry;
 
+import com.brona.etendue.math.bounding.BoundingBoxAccumulator;
 import com.brona.etendue.math.tuple.Point2;
 import com.brona.etendue.math.bounding.BoundingBox;
 import com.brona.etendue.math.curve.Curve;
@@ -79,7 +80,7 @@ public class Path {
             );
 
 
-        BoundingBox boundingBox = BoundingBox.empty();
+        BoundingBoxAccumulator boundingBox = BoundingBox.accumulator();
         List<Curve> curves = new ArrayList<>(segments.size());
 
         float startX = Float.NaN, startY = Float.NaN;
@@ -94,13 +95,14 @@ public class Path {
                 case MOVE:
                     startX = lastX = arguments[0];
                     startY = lastY = arguments[1];
+                    boundingBox.add(lastX, lastY);
                     break;
 
                 case LINE:
                     curves.add(Curve.line(lastX, lastY, arguments[0], arguments[1]));
-                    BoundingBox.combine(boundingBox, BoundingBox.create(lastX, lastY, arguments[0], arguments[1]));
                     lastX = arguments[0];
                     lastY = arguments[1];
+                    boundingBox.add(lastX, lastY);
                     break;
 
                 // case QUADRATIC_BEZIER:
@@ -113,7 +115,6 @@ public class Path {
                         break;
 
                     curves.add(Curve.line(lastX, lastY, startX, startY));
-                    BoundingBox.combine(boundingBox, BoundingBox.create(lastX, lastY, startX, startY));
                     lastX = startX;
                     lastY = startY;
                     break;
@@ -127,7 +128,7 @@ public class Path {
         }
 
         return new Geometry.Simple(
-                boundingBox,
+                boundingBox.createBoundingBox(),
                 Collections.unmodifiableList(curves),
                 windRule
         );
