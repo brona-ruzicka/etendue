@@ -84,7 +84,7 @@ public class SimpleGraphGridVisualizer implements GraphGridVisualizer {
                     graphics,
                     transformer.getAuxGraphicsSize().getX() - 40,
                     23,
-                    "φ [ ° ]"
+                    "α [ ° ]"
             );
             Texts.drawText(
                     graphics,
