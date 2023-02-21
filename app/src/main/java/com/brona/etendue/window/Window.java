@@ -1,7 +1,6 @@
 package com.brona.etendue.window;
 
 
-import com.brona.etendue.math.tuple.Point2;
 import com.brona.etendue.math.tuple.Vector2;
 import com.brona.etendue.visualization.Painter;
 import org.jetbrains.annotations.NotNull;
@@ -9,7 +8,6 @@ import org.jetbrains.annotations.NotNull;
 import java.util.List;
 import javax.swing.*;
 import java.awt.*;
-import java.awt.geom.AffineTransform;
 import java.util.ArrayList;
 
 public class Window extends JFrame {

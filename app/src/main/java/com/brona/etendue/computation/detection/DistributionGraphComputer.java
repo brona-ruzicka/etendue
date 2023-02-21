@@ -5,8 +5,6 @@ import com.brona.etendue.data.simulation.Section;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
-import java.util.Collections;
-import java.util.Map;
 
 @FunctionalInterface
 public interface DistributionGraphComputer {

@@ -7,6 +7,7 @@ import lombok.experimental.FieldDefaults;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
+import java.util.List;
 
 @Getter
 @ToString
@@ -109,6 +110,11 @@ public class BoundingBox {
     @NotNull
     public static BoundingBox combine(@NotNull Collection<@NotNull BoundingBox> boxes) {
         return boxes.stream().reduce(BoundingBox::combine).orElseThrow();
+    }
+
+    @NotNull
+    public static BoundingBox combine(@NotNull BoundingBox... boxes) {
+        return combine(List.of(boxes));
     }
 
 

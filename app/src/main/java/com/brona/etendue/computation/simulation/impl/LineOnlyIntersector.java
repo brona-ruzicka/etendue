@@ -11,7 +11,6 @@ import com.brona.etendue.math.curve.Curve;
 import com.brona.etendue.math.geometry.Geometry;
 import com.brona.etendue.scheduling.CancelableScheduler;
 import lombok.EqualsAndHashCode;
-import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 import org.jetbrains.annotations.NotNull;
 

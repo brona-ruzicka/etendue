@@ -13,6 +13,8 @@ import org.jetbrains.annotations.NotNull;
 
 import java.awt.*;
 import java.awt.geom.AffineTransform;
+import java.awt.geom.Ellipse2D;
+import java.awt.geom.Rectangle2D;
 
 @ToString
 @EqualsAndHashCode
@@ -53,7 +55,12 @@ public class SimpleEmitterVisualizer implements EmitterVisualizer {
                 Point2 point = Transformer.transformPoint(box.getMinPoint(), transform);
 
                 if (width == 0f && height == 0f) {
-                    graphics.fillOval(Math.round(point.getX() - 1.5f), Math.round(point.getY() - 1.5f), 3, 3);
+                    graphics.fill(new Ellipse2D.Float(
+                            point.getX() - 1.5f,
+                            point.getY() - 1.5f,
+                            3f,
+                            3f
+                    ));
                     return;
                 }
 
@@ -61,31 +68,31 @@ public class SimpleEmitterVisualizer implements EmitterVisualizer {
                 Vector2 size = otherPoint.minus(point);
 
                 if (width == 0f) {
-                    graphics.fillRect(
-                            Math.round(point.getX() - 1.5f),
-                            Math.round(point.getY()),
-                            Math.round(3f),
-                            Math.round(size.getY())
-                    );
+                    graphics.fill(new Rectangle2D.Float(
+                            point.getX() - 1.5f,
+                            point.getY(),
+                            3f,
+                            size.getY()
+                    ));
                     return;
                 }
 
                 if (height == 0f) {
-                    graphics.fillRect(
-                            Math.round(point.getX()),
-                            Math.round(point.getY() - 1.5f),
-                            Math.round(size.getX()),
-                            Math.round(3f)
-                    );
+                    graphics.fill(new Rectangle2D.Float(
+                            point.getX(),
+                            point.getY() - 1.5f,
+                            size.getX(),
+                            3f
+                    ));
                     return;
                 }
 
-                graphics.fillRect(
-                        Math.round(point.getX()),
-                        Math.round(point.getY()),
-                        Math.round(size.getX()),
-                        Math.round(size.getY())
-                );
+                graphics.fill(new Rectangle2D.Float(
+                        point.getX(),
+                        point.getY(),
+                        size.getX(),
+                        size.getY()
+                ));
 
             });
         };

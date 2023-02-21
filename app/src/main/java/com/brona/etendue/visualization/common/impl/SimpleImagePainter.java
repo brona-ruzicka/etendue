@@ -10,7 +10,6 @@ import org.jetbrains.annotations.NotNull;
 import java.awt.*;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
-import java.util.Arrays;
 
 @ToString
 @EqualsAndHashCode

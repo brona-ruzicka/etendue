@@ -9,8 +9,6 @@ import com.brona.etendue.math.tuple.Vector2;
 import com.brona.etendue.data.scene.Emitter;
 import org.jetbrains.annotations.NotNull;
 
-import static com.brona.etendue.user.Tuples.p;
-
 public final class Emitters {
 
     private Emitters() { }

@@ -1,6 +1,5 @@
 package com.brona.etendue.scheduling;
 
-import lombok.SneakyThrows;
 import lombok.ToString;
 
 @FunctionalInterface

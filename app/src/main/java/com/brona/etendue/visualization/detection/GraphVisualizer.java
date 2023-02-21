@@ -5,8 +5,6 @@ import com.brona.etendue.visualization.Painter;
 import com.brona.etendue.visualization.Transformer;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Map;
-
 @FunctionalInterface
 public interface GraphVisualizer {
 

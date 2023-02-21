@@ -5,7 +5,6 @@ import com.brona.etendue.data.simulation.Section;
 import com.brona.etendue.math.bounding.BoundingBox;
 import com.brona.etendue.math.tuple.Point2;
 import com.brona.etendue.math.tuple.Vector2;
-import com.brona.etendue.user.Emitters;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;

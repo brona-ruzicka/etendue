@@ -18,7 +18,7 @@ import java.awt.geom.AffineTransform;
 @AllArgsConstructor
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PROTECTED)
-public class SimpleEtendueVisualizer implements EtendueVisualizer {
+public class DensityBasedEtendueVisualizer implements EtendueVisualizer {
 
     public static final int DEFAULT_STEP_COUNT = 700;
     @NotNull
@@ -34,7 +34,7 @@ public class SimpleEtendueVisualizer implements EtendueVisualizer {
     @NotNull Stroke stroke = DEFAULT_STROKE;
 
 
-    public SimpleEtendueVisualizer(int stepCount) {
+    public DensityBasedEtendueVisualizer(int stepCount) {
         this.stepCount = stepCount;
     }
 
@@ -46,14 +46,22 @@ public class SimpleEtendueVisualizer implements EtendueVisualizer {
         return graphics -> {
             AffineTransform transform = transformer.createEtendueTransform();
 
-            graphics.setColor(color);
             graphics.setStroke(stroke);
 
             etendue.getPoints().forEach((point, count) -> {
                 CancelableScheduler.check();
 
+                float[] rgb = color.getRGBComponents(null);
+                float intensity = 1 - count / etendue.getMax();
+                Color lightened = new Color(
+                        rgb[0] + (1 - rgb[0]) * intensity,
+                        rgb[1] + (1 - rgb[1]) * intensity,
+                        rgb[2] + (1 - rgb[2]) * intensity
+                );
+
                 Point2 graphicsPoint = Transformer.transformPoint(point, transform);
 
+                graphics.setColor(lightened);
                 graphics.fillRect(
                         Math.round(graphicsPoint.getX() - stepX/2),
                         Math.round(graphicsPoint.getY() - stepY/2),

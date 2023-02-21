@@ -47,7 +47,7 @@ public class SimpleGraphGridVisualizer implements GraphGridVisualizer {
             float height = transformer.getAuxGraphicsSize().getY();
 
 
-            int[] degrees = new int[]{ -90, -60, -45, -30, -20, -10, 20, 0, 10, 30, 45, 60, 90 };
+            int[] degrees = new int[]{ -90, -60, -45, -30, -20, -10, 0, 10, 20, 30, 45, 60, 90 };
             for (int d : degrees) {
                 float rads = (float) Math.PI / 180 * d;
 
@@ -90,7 +90,7 @@ public class SimpleGraphGridVisualizer implements GraphGridVisualizer {
                     graphics,
                     5,
                     transformer.getAuxGraphicsSize().getY() - 18,
-                    "W / Wₘₐₓ [ % ]"
+                    "P / Pₘₐₓ [ % ]"
             );
 
 

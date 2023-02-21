@@ -5,9 +5,7 @@ import com.brona.etendue.math.geometry.Path;
 import com.brona.etendue.math.tuple.Point2;
 import com.brona.etendue.math.bounding.BoundingBox;
 import com.brona.etendue.math.curve.Curve;
-import com.brona.etendue.math.tuple.Vector2;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 import java.util.function.UnaryOperator;

@@ -44,7 +44,8 @@ public class SimpleSimulationGridVisualizer implements SimulationGridVisualizer 
             graphics.setStroke(stroke);
             graphics.setColor(mainColor);
 
-            float ordX = (float) Math.pow(10, Math.floor(Math.log10(transformer.getSimulationSize().getX() / transformer.getMainGraphicsSize().getX() * 40) + 1));
+//            float ordX = (float) Math.pow(10, Math.floor(Math.log10(transformer.getSimulationSize().getX() / transformer.getMainGraphicsSize().getX() * 40) + 1));
+            float ordX = (float) Math.pow(10, Math.floor(Math.log10(transformer.getSimulationSize().getX() / transformer.getMainGraphicsSize().getX() * 4) + 1));
             int minX = Math.round(transformer.getMinPoint().getX() / ordX);
             int maxX = Math.round(transformer.getMaxPoint().getX() / ordX);
 
@@ -67,11 +68,13 @@ public class SimpleSimulationGridVisualizer implements SimulationGridVisualizer 
 
                 if (textPoint.getX() < 20 || textPoint.getY() + 60 > transformer.getMainGraphicsSize().getX())
                     continue;
-                Texts.drawText(graphics, textPoint.getX() + 5, 3, "" + posX);
+//                Texts.drawText(graphics, textPoint.getX() + 5, 3, "" + posX);
+                Texts.drawText(graphics, textPoint.getX() + 5, 3, "" + Math.round(posX));
             }
 
 
-            float ordY = (float) Math.pow(10, Math.floor(Math.log10(transformer.getSimulationSize().getY() / transformer.getMainGraphicsSize().getX() * 40) + 1));
+//            float ordY = (float) Math.pow(10, Math.floor(Math.log10(transformer.getSimulationSize().getY() / transformer.getMainGraphicsSize().getY() * 40) + 1));
+            float ordY = (float) Math.pow(10, Math.floor(Math.log10(transformer.getSimulationSize().getY() / transformer.getMainGraphicsSize().getY() * 4) + 1));
             int minY = Math.round(transformer.getMinPoint().getY() / ordY);
             int maxY = Math.round(transformer.getMaxPoint().getY() / ordY);
 
@@ -90,7 +93,8 @@ public class SimpleSimulationGridVisualizer implements SimulationGridVisualizer 
 
                 if (textPoint.getY() < 20  || textPoint.getY() + 40 > transformer.getMainGraphicsSize().getY())
                     continue;
-                Texts.drawText(graphics, 5, textPoint.getY() + 3, "" + posY);
+//                Texts.drawText(graphics, 5, textPoint.getY() + 3, "" + posY);
+                Texts.drawText(graphics, 5, textPoint.getY() + 3, "" + Math.round(posY));
             }
 
 

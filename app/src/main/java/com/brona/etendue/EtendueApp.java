@@ -13,9 +13,6 @@ import com.brona.etendue.data.detection.GraphResult;
 import com.brona.etendue.scheduling.CancelableScheduler;
 import com.brona.etendue.scheduling.RerunHandle;
 import com.brona.etendue.scheduling.Schedulers;
-import com.brona.etendue.scheduling.impl.SimpleRerunnableScheduler;
-import com.brona.etendue.scheduling.impl.AutoCancellingScheduler;
-import com.brona.etendue.scheduling.impl.WrappingScheduler;
 import com.brona.etendue.visualization.Texts;
 import com.brona.etendue.visualization.common.ImageCreator;
 import com.brona.etendue.visualization.common.ImagePainter;
@@ -30,7 +27,7 @@ import com.brona.etendue.visualization.detection.EtendueVisualizer;
 import com.brona.etendue.visualization.detection.impl.SimpleEtendueGridVisualizer;
 import com.brona.etendue.visualization.detection.impl.SimpleGraphGridVisualizer;
 import com.brona.etendue.visualization.detection.impl.SimpleGraphVisualizer;
-import com.brona.etendue.visualization.detection.impl.SimpleEtendueVisualizer;
+import com.brona.etendue.visualization.detection.impl.DensityBasedEtendueVisualizer;
 import com.brona.etendue.visualization.simulation.EmitterVisualizer;
 import com.brona.etendue.visualization.simulation.InteractorVisualizer;
 import com.brona.etendue.visualization.simulation.RayVisualizer;
@@ -41,12 +38,10 @@ import com.brona.etendue.visualization.simulation.impl.SimpleRayVisualizer;
 import com.brona.etendue.visualization.simulation.impl.SimpleSimulationGridVisualizer;
 import com.brona.etendue.window.Window;
 import com.brona.etendue.data.simulation.Section;
-import com.brona.etendue.math.tuple.Point2;
 import com.brona.etendue.visualization.Transformer;
 import com.brona.etendue.computation.simulation.RaySimulator;
 import com.brona.etendue.computation.simulation.impl.LineOnlyIntersector;
 import com.brona.etendue.computation.simulation.impl.SimpleTracer;
-import com.brona.etendue.computation.simulation.impl.SingleThreadSimulator;
 import com.brona.etendue.data.scene.Scene;
 import com.brona.etendue.data.simulation.Ray;
 import com.brona.etendue.window.WindowListener;
@@ -57,7 +52,6 @@ import java.awt.*;
 import java.awt.geom.*;
 import java.util.*;
 import java.util.concurrent.Executors;
-import java.util.stream.Collectors;
 
 public class EtendueApp implements Runnable {
 
@@ -72,8 +66,9 @@ public class EtendueApp implements Runnable {
         new EtendueApp(scene, width, height).run();
     }
 
+
     @NotNull
-    protected static final Color DARK_GREEN = new Color(0, 200, 0);
+    public static final Color DARK_GREEN = new Color(0, 200, 0);
 
     public static final int DEFAULT_WIDTH = 1000;
     public static final int DEFAULT_HEIGHT = 700;
@@ -97,14 +92,13 @@ public class EtendueApp implements Runnable {
     protected Window simulationWindow, etendueWindow, graphWindow;
 
 
+    protected float xCoordinate = 0;
+
     protected Collection<Ray> rays;
     protected Collection<Section> sections;
 
-    protected float xCoordinate = 0;
-    protected float etendueSum = 0;
-
-
     protected RerunHandle<?> detectionTask, etendueTask, graphTask;
+
 
     @Override
     public void run() {
@@ -166,7 +160,7 @@ public class EtendueApp implements Runnable {
         ));
         etendueTask = Schedulers.rerunnableAutoCanceling(mainScheduler).execute(new EtendueTask(
                 new SimpleEtendueComputer(200),
-                new SimpleEtendueVisualizer(200),
+                new DensityBasedEtendueVisualizer(200),
                 new SimpleEtendueGridVisualizer()
         ));
         graphTask = Schedulers.rerunnableAutoCanceling(mainScheduler).execute(new GraphTask(
@@ -185,7 +179,7 @@ public class EtendueApp implements Runnable {
 
         // Setup x coordinate selection
         WindowListener listener = new WindowListener(point -> {
-            xCoordinate = point.getX() / transformer.getRatio() + transformer.getMinPoint().getX();
+            xCoordinate = point.getX() / transformer.getMainRatio() + transformer.getMinPoint().getX();
             simulationWindow.repaint();
             detectionTask.rerun();
         });

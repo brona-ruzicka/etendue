@@ -18,7 +18,7 @@ import java.awt.geom.Line2D;
 @AllArgsConstructor
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PROTECTED)
-public class SimpleEtendueGridVisualizer implements EtendueGridVisualizer {
+public class KBasedEtendueGridVisualizer implements EtendueGridVisualizer {
 
     @NotNull
     public static final Color DEFAULT_COLOR = new Color(0f,0f,0f,0.1f);
@@ -43,21 +43,19 @@ public class SimpleEtendueGridVisualizer implements EtendueGridVisualizer {
             graphics.setStroke(stroke);
             graphics.setColor(mainColor);
 
-//            int[] degrees = new int[]{ -90, -60, -45, -30, -20, -10, 0, 10, 20, 30, 45, 60, 90 };
-            int[] degrees = new int[]{ -90, -45, -20, 0, 20, 45, 90 };
-            for (int d : degrees) {
-                float sin = (float) Math.sin(Math.PI / 180 * d);
+            float[] kValues = new float[]{ -1f, -0.5f, 0f, 0.5f, 1f };
+            for (float k : kValues) {
 
-                if (d != 0) {
+                if (k != 0f) {
                     graphics.setColor(defaultColor);
                 }
 
-                float xPos = Transformer.transformPoint(Point2.create(sin, 0), transform).getX();
+                float xPos = Transformer.transformPoint(Point2.create(k, 0), transform).getX();
                 graphics.draw(new Line2D.Float(xPos, 0, xPos, height));
 
                 graphics.setColor(mainColor);
 
-                Texts.drawText(graphics, xPos + 5, 3, "" + d);
+                Texts.drawText(graphics, xPos + 5, 3, "" + k);
             }
 
 
@@ -90,7 +88,7 @@ public class SimpleEtendueGridVisualizer implements EtendueGridVisualizer {
                     graphics,
                     transformer.getAuxGraphicsSize().getX() - 40,
                     23,
-                    "α [ ° ]"
+                    "k [ 1 ]"
             );
             Texts.drawText(
                     graphics,

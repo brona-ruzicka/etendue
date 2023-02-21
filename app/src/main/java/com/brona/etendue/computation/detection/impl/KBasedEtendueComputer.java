@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PROTECTED)
-public class SimpleEtendueComputer implements EtendueComputer {
+public class KBasedEtendueComputer implements EtendueComputer {
 
     public static final int DEFAULT_STEP_COUNT = 700;
 
@@ -35,7 +35,7 @@ public class SimpleEtendueComputer implements EtendueComputer {
                 .map(section -> {
                     CancelableScheduler.check();
                     return Point2.create(
-                            stepX * Math.round(section.getDirection().getY() / stepX),
+                            stepX * Math.round(section.getDirection().getY() / section.getDirection().getX() / stepX),
                             stepY * Math.round(section.getPoint().getY() / stepY)
                     );
                 })
