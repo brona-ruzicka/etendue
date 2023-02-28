@@ -9,7 +9,9 @@ import java.util.Collection;
 @FunctionalInterface
 public interface EtendueComputer {
 
+    float ETENDUE_SIMULATION_WIDTH = 2.5f;
+
     @NotNull
-    EtendueResult compute(@NotNull Collection<@NotNull Section> sections, float simulationHeight);
+    EtendueResult compute(@NotNull Collection<@NotNull Section> sections, float sizeY);
 
 }

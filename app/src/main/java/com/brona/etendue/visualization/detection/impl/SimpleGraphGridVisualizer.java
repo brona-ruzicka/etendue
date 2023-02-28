@@ -47,7 +47,8 @@ public class SimpleGraphGridVisualizer implements GraphGridVisualizer {
             float height = transformer.getAuxGraphicsSize().getY();
 
 
-            int[] degrees = new int[]{ -90, -60, -45, -30, -20, -10, 0, 10, 20, 30, 45, 60, 90 };
+//            int[] degrees = new int[]{ -90, -60, -45, -30, -20, -10, 0, 10, 20, 30, 45, 60, 90 };
+            int[] degrees = new int[]{ -90, -60, -30, 0, 30, 60, 90 };
             for (int d : degrees) {
                 float rads = (float) Math.PI / 180 * d;
 
@@ -64,10 +65,16 @@ public class SimpleGraphGridVisualizer implements GraphGridVisualizer {
             }
 
 
-            for (int y = 0; y <= 10; y += 1) {
-                float posY = (y + 1) * height / 12;
+//            for (int y = 0; y <= 10; y += 1) {
+//                float posY = (y + 1) * height / 12;
+//
+//                if (y != 0 && y != 5) {
+//                    graphics.setColor(defaultColor);
+//                }
+            for (int y = 0; y <= 4; y += 1) {
+                float posY = (y * 2.5f + 2) * height / 14;
 
-                if (y != 0 && y != 5) {
+                if (y != 0 && y != 2) {
                     graphics.setColor(defaultColor);
                 }
 
@@ -76,7 +83,8 @@ public class SimpleGraphGridVisualizer implements GraphGridVisualizer {
                 graphics.setColor(mainColor);
                 Point2 textPoint = Point2.create(0, posY);
 
-                Texts.drawText(graphics, 5, textPoint.getY() + 3, "" + (y*10));
+//                Texts.drawText(graphics, 5, textPoint.getY() + 3, "" + (y*10));
+                Texts.drawText(graphics, 5, textPoint.getY() + 3, "" + (y*25));
             }
 
             graphics.setColor(mainColor);
@@ -90,7 +98,7 @@ public class SimpleGraphGridVisualizer implements GraphGridVisualizer {
                     graphics,
                     5,
                     transformer.getAuxGraphicsSize().getY() - 18,
-                    "P / Pₘₐₓ [ % ]"
+                    "N / Nₘₐₓ [ % ]"
             );
 
 

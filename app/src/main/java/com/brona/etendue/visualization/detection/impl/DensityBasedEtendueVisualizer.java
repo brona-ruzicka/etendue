@@ -12,6 +12,8 @@ import org.jetbrains.annotations.NotNull;
 
 import java.awt.*;
 import java.awt.geom.AffineTransform;
+import java.awt.geom.Ellipse2D;
+import java.awt.geom.Rectangle2D;
 
 @ToString
 @EqualsAndHashCode
@@ -20,7 +22,7 @@ import java.awt.geom.AffineTransform;
 @FieldDefaults(level = AccessLevel.PROTECTED)
 public class DensityBasedEtendueVisualizer implements EtendueVisualizer {
 
-    public static final int DEFAULT_STEP_COUNT = 700;
+    public static final int DEFAULT_STEP_COUNT = 200;
     @NotNull
     public static final Color DEFAULT_COLOR = Color.RED;
 
@@ -62,12 +64,12 @@ public class DensityBasedEtendueVisualizer implements EtendueVisualizer {
                 Point2 graphicsPoint = Transformer.transformPoint(point, transform);
 
                 graphics.setColor(lightened);
-                graphics.fillRect(
-                        Math.round(graphicsPoint.getX() - stepX/2),
-                        Math.round(graphicsPoint.getY() - stepY/2),
-                        Math.round(stepX),
-                        Math.round(stepY)
-                );
+                graphics.fill(new Rectangle2D.Float(
+                        graphicsPoint.getX() - stepX/2,
+                        graphicsPoint.getY() - stepY/2,
+                        stepX,
+                        stepY
+                ));
             });
 
         };

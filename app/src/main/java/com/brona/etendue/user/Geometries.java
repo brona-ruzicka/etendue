@@ -101,8 +101,8 @@ public final class Geometries {
      * @param xDependsOnY false - oriented upwards, true - oriented sideways
      * @param originX where the origin for the generated points is in the simulation
      * @param originY where the origin for the generated points is in the simulation
-     * @param min minimal parameter
-     * @param max maximal parameter
+     * @param begin minimal parameter
+     * @param end maximal parameter
      * @param step parameter step
      * @param formula the formula
      * @return A geometry
@@ -110,23 +110,40 @@ public final class Geometries {
     @NotNull
     public static Geometry formula(
             boolean xDependsOnY, float originX, float originY,
-            float min, float max, float step, @NotNull UnaryOperator<Float> formula
+            float begin, float end, float step, @NotNull UnaryOperator<Float> formula
     ) {
 
         LinkedList<Point2> points = new LinkedList<>();
 
-        for (int i = 0; min + i * step <= max; i++) {
-            float current = min + i * step;
+        for (int i = 0; i < Math.ceil((end - begin) / step); i++) {
+
+            float current = begin + i * step;
             float dependent = formula.apply(current);
 
             if (xDependsOnY) {
                 points.add(Point2.create(dependent + originX, current + originY));
             } else {
-                points.add(Point2.create(current + originX, current + originY));
+                points.add(Point2.create(current + originX, dependent + originY));
             }
         }
 
+
+        float endDependent = formula.apply(end);
+        if (xDependsOnY) {
+            points.add(Point2.create(endDependent + originX, end + originY));
+        } else {
+            points.add(Point2.create(end + originX, endDependent + originY));
+        }
+
         return Geometries.polyline(points);
+    }
+
+    @NotNull
+    public static Geometry formula(
+            boolean xDependsOnY, Point2 origin,
+            float begin, float end, float step, @NotNull UnaryOperator<Float> formula
+    ) {
+        return formula(xDependsOnY, origin.getX(), origin.getY(), begin, end, step, formula);
     }
 
 }

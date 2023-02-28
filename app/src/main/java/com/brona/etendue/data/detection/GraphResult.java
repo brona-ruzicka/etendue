@@ -17,4 +17,6 @@ public class GraphResult {
 
     float maxValue;
 
+    float total;
+
 }

@@ -25,7 +25,7 @@ public class ColoredInteractorVisualizer implements InteractorVisualizer {
     @NotNull
     public static final Color DEFAULT_REFLECTING_INTERACTOR_COLOR = Color.BLUE;
     @NotNull
-    public static final Color DEFAULT_GENERIC_INTERACT_COLOR = Color.DARK_GRAY;
+    public static final Color DEFAULT_GENERIC_INTERACTOR_COLOR = Color.DARK_GRAY;
 
 
     @NotNull
@@ -33,7 +33,7 @@ public class ColoredInteractorVisualizer implements InteractorVisualizer {
 
 
     @NotNull Color reflectingInteractorColor = DEFAULT_REFLECTING_INTERACTOR_COLOR;
-    @NotNull Color genericInteractorColor = DEFAULT_GENERIC_INTERACT_COLOR;
+    @NotNull Color genericInteractorColor = DEFAULT_GENERIC_INTERACTOR_COLOR;
     @NotNull Stroke stroke = DEFAULT_STROKE;
 
 

@@ -12,6 +12,7 @@ import org.jetbrains.annotations.NotNull;
 import java.awt.*;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Line2D;
+import java.util.stream.DoubleStream;
 
 @ToString
 @EqualsAndHashCode
@@ -44,8 +45,11 @@ public class SimpleSimulationGridVisualizer implements SimulationGridVisualizer 
             graphics.setStroke(stroke);
             graphics.setColor(mainColor);
 
-//            float ordX = (float) Math.pow(10, Math.floor(Math.log10(transformer.getSimulationSize().getX() / transformer.getMainGraphicsSize().getX() * 40) + 1));
-            float ordX = (float) Math.pow(10, Math.floor(Math.log10(transformer.getSimulationSize().getX() / transformer.getMainGraphicsSize().getX() * 4) + 1));
+            float ordX = (float) DoubleStream.of(
+//                    Math.pow(2, Math.floor(Math.log(transformer.getSimulationSize().getX() / transformer.getMainGraphicsSize().getX() * 40) / Math.log(2) + 1)),
+                    Math.pow(5, Math.floor(Math.log(transformer.getSimulationSize().getX() / transformer.getMainGraphicsSize().getX() * 40) / Math.log(5) + 1)),
+                    Math.pow(10, Math.floor(Math.log(transformer.getSimulationSize().getX() / transformer.getMainGraphicsSize().getX() * 40) / Math.log(10) + 1))
+            ).min().orElse(0);
             int minX = Math.round(transformer.getMinPoint().getX() / ordX);
             int maxX = Math.round(transformer.getMaxPoint().getX() / ordX);
 
@@ -66,15 +70,18 @@ public class SimpleSimulationGridVisualizer implements SimulationGridVisualizer 
 
                 Point2 textPoint = Transformer.transformPoint(Point2.create(posX, 0), transform);
 
-                if (textPoint.getX() < 20 || textPoint.getY() + 60 > transformer.getMainGraphicsSize().getX())
+                if (textPoint.getX() < 20 || textPoint.getX() + 35 > transformer.getMainGraphicsSize().getX())
                     continue;
 //                Texts.drawText(graphics, textPoint.getX() + 5, 3, "" + posX);
                 Texts.drawText(graphics, textPoint.getX() + 5, 3, "" + Math.round(posX));
             }
 
 
-//            float ordY = (float) Math.pow(10, Math.floor(Math.log10(transformer.getSimulationSize().getY() / transformer.getMainGraphicsSize().getY() * 40) + 1));
-            float ordY = (float) Math.pow(10, Math.floor(Math.log10(transformer.getSimulationSize().getY() / transformer.getMainGraphicsSize().getY() * 4) + 1));
+            float ordY = (float) DoubleStream.of(
+//                    Math.pow(2, Math.floor(Math.log(transformer.getSimulationSize().getY() / transformer.getMainGraphicsSize().getY() * 40) / Math.log(2) )),
+                    Math.pow(5, Math.floor(Math.log(transformer.getSimulationSize().getY() / transformer.getMainGraphicsSize().getY() * 40) / Math.log(5) + 1)),
+                    Math.pow(10, Math.floor(Math.log(transformer.getSimulationSize().getY() / transformer.getMainGraphicsSize().getY() * 40) / Math.log(10) + 1))
+            ).min().orElse(0);
             int minY = Math.round(transformer.getMinPoint().getY() / ordY);
             int maxY = Math.round(transformer.getMaxPoint().getY() / ordY);
 

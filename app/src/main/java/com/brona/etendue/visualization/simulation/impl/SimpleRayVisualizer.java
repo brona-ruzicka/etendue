@@ -22,13 +22,13 @@ import java.util.Random;
 @FieldDefaults(level = AccessLevel.PROTECTED)
 public class SimpleRayVisualizer implements RayVisualizer {
 
-    public static final int DEFAULT_MAX_COUNT = 100;
+    public static final int DEFAULT_MAX_COUNT = 15;
 
     @NotNull
     public static final Color DEFAULT_COLOR = Color.RED;
 
     @NotNull
-    public static final Stroke DEFAULT_STROKE = new BasicStroke(0.5f, BasicStroke.CAP_SQUARE, BasicStroke.JOIN_BEVEL);
+    public static final Stroke DEFAULT_STROKE = new BasicStroke(1f, BasicStroke.CAP_SQUARE, BasicStroke.JOIN_BEVEL);
 
 
     int maxCount = DEFAULT_MAX_COUNT;

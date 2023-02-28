@@ -12,6 +12,7 @@ import org.jetbrains.annotations.NotNull;
 import java.awt.*;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Line2D;
+import java.util.stream.DoubleStream;
 
 @ToString
 @EqualsAndHashCode
@@ -59,8 +60,11 @@ public class KBasedEtendueGridVisualizer implements EtendueGridVisualizer {
             }
 
 
-//            float ordY = (float) Math.pow(10, Math.floor(Math.log10(transformer.getSimulationSize().getY() / transformer.getMainGraphicsSize().getX() * 40) + 1));
-            float ordY = (float) Math.pow(10, Math.floor(Math.log10(transformer.getSimulationSize().getY() / transformer.getAuxGraphicsSize().getY() * 4) + 1));
+            float ordY = (float) DoubleStream.of(
+//                    Math.pow(2, Math.floor(Math.log(transformer.getSimulationSize().getY() / transformer.getAuxGraphicsSize().getY() * 40) / Math.log(2) )),
+                    Math.pow(5, Math.floor(Math.log(transformer.getSimulationSize().getY() / transformer.getAuxGraphicsSize().getY() * 40) / Math.log(5) + 1)),
+                    Math.pow(10, Math.floor(Math.log(transformer.getSimulationSize().getY() / transformer.getAuxGraphicsSize().getY() * 40) / Math.log(10) + 1))
+            ).min().orElse(0);
             int minY = Math.round(transformer.getMinPoint().getY() / ordY);
             int maxY = Math.round(transformer.getMaxPoint().getY() / ordY);
 
@@ -77,7 +81,7 @@ public class KBasedEtendueGridVisualizer implements EtendueGridVisualizer {
                 graphics.setColor(mainColor);
                 Point2 textPoint = Transformer.transformPoint(Point2.create(0, posY), transform);
 
-                if (textPoint.getY() < 20  || textPoint.getY() + 40 > transformer.getMainGraphicsSize().getY())
+                if (textPoint.getY() < 20  || textPoint.getY() + 40 > transformer.getAuxGraphicsSize().getY())
                     continue;
 //                Texts.drawText(graphics, 5, textPoint.getY() + 3, "" + posY);
                 Texts.drawText(graphics, 5, textPoint.getY() + 3, "" + Math.round(posY));

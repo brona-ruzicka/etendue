@@ -20,16 +20,16 @@ import java.util.stream.Collectors;
 @FieldDefaults(level = AccessLevel.PROTECTED)
 public class KBasedEtendueComputer implements EtendueComputer {
 
-    public static final int DEFAULT_STEP_COUNT = 700;
+    public static final int DEFAULT_STEP_COUNT = 200;
 
     int stepCount = DEFAULT_STEP_COUNT;
 
-
     @NotNull
     @Override
-    public EtendueResult compute(@NotNull Collection<@NotNull Section> sections, float simulationHeight) {
-        float stepX = 1.2f * 2 / stepCount;
-        float stepY = simulationHeight / stepCount;
+    public EtendueResult compute(@NotNull Collection<@NotNull Section> sections, float sizeY) {
+
+        float stepX = EtendueComputer.ETENDUE_SIMULATION_WIDTH / stepCount;
+        float stepY = sizeY / stepCount;
 
         Map<Point2,Long> map = sections.stream()
                 .map(section -> {

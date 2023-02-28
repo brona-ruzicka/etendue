@@ -1,5 +1,7 @@
 package com.brona.etendue.visualization;
 
+import com.brona.etendue.computation.detection.DistributionGraphComputer;
+import com.brona.etendue.computation.detection.EtendueComputer;
 import com.brona.etendue.math.bounding.BoundingBox;
 import com.brona.etendue.math.tuple.Point2;
 import com.brona.etendue.math.tuple.Vector2;
@@ -53,8 +55,8 @@ public class Transformer {
 
     public Transformer(@NotNull BoundingBox simulationBox, float mainGraphicsWidth, float mainGraphicsHeight, float auxGraphicsWidth, float auxGraphicsHeight) {
 
-        float wantedSimulationWidth = 2f * simulationBox.getWidth();
-        float wantedSimulationHeight = 2f * simulationBox.getHeight();
+        float wantedSimulationWidth = 2f * Math.max(simulationBox.getWidth(), 0.1f);
+        float wantedSimulationHeight = 2f * Math.max(simulationBox.getHeight(), 0.1f);
 
         float wantedSimulationMinX = simulationBox.getMinX() - 0.5f * simulationBox.getWidth();
         float wantedSimulationMinY = simulationBox.getMinY() - 0.5f * simulationBox.getHeight();
@@ -97,16 +99,16 @@ public class Transformer {
     @NotNull
     public AffineTransform createEtendueTransform() {
         AffineTransform transform = new AffineTransform();
-        transform.preConcatenate(AffineTransform.getTranslateInstance(1.25f, -this.minPoint.getY()));
-        transform.preConcatenate(AffineTransform.getScaleInstance(this.auxGraphicsSize.getX() / 2.5f, this.auxRatio));
+        transform.preConcatenate(AffineTransform.getTranslateInstance(EtendueComputer.ETENDUE_SIMULATION_WIDTH / 2 , -this.minPoint.getY()));
+        transform.preConcatenate(AffineTransform.getScaleInstance(this.auxGraphicsSize.getX() / EtendueComputer.ETENDUE_SIMULATION_WIDTH, this.auxRatio));
         return transform;
     }
 
     @NotNull
     public AffineTransform createGraphTransform(float maxValue) {
         AffineTransform transform = new AffineTransform();
-        transform.preConcatenate(AffineTransform.getTranslateInstance(Math.PI * 0.6, 0.1 * maxValue));
-        transform.preConcatenate(AffineTransform.getScaleInstance(this.auxGraphicsSize.getX() / (Math.PI * 1.2f), this.auxGraphicsSize.getY()  / (1.2 * maxValue)));
+        transform.preConcatenate(AffineTransform.getTranslateInstance(DistributionGraphComputer.GRAPH_SIMULATION_WIDTH / 2, 0.2 * maxValue));
+        transform.preConcatenate(AffineTransform.getScaleInstance(this.auxGraphicsSize.getX() / DistributionGraphComputer.GRAPH_SIMULATION_WIDTH, this.auxGraphicsSize.getY()  / (1.4 * maxValue)));
         return transform;
     }
 

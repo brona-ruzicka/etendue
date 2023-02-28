@@ -1,7 +1,6 @@
 package com.brona.etendue.user;
 
 import com.brona.etendue.data.scene.Member;
-import com.brona.etendue.data.scene.Scene;
 import com.brona.etendue.math.bounding.BoundingBox;
 import com.brona.etendue.math.tuple.Point2;
 import org.jetbrains.annotations.NotNull;
@@ -9,13 +8,6 @@ import org.jetbrains.annotations.NotNull;
 public final class Utils {
 
     private Utils() { }
-
-
-    /** Creates a scene with the supplied members */
-    @NotNull
-    public static Scene scene(@NotNull Member... members) {
-        return new Scene().addMembers(members);
-    }
 
 
     /** A dummy member to direct the auto-scale */

@@ -5,28 +5,30 @@ import com.brona.etendue.user.Geometries;
 import com.brona.etendue.user.Interactors;
 import com.brona.etendue.user.Utils;
 
+import static com.brona.etendue.user.Tuples.point;
 
 public final class Main {
 
     /** The main function, for examples see {@link Examples} */
     public static void main(String[] args) {
 
-        Scene scene = Utils.scene(
-                // Interactors
-                Interactors.reflecting(Geometries.formula(
-                        true, -25, 0,
-                        -20, 20, 0.1f, x -> x*x / 20
-                )),
+        // Světlovod z kapitoly 3.2.1
+        Scene scene = Scene.create(
+                Interactors.reflecting(
+                        Geometries.line(point(0, 1), point(5, 2))
+                ),
+                Interactors.reflecting(
+                        Geometries.line(point(0, -1), point(5, -2))
+                ),
 
-                Emitters.line(-20, 0, 10f, 1000000),
-
-                // Zooming
-                Utils.extendViewBox(-30, -30, 70, 30)
+                Emitters.line(
+                        point(0, 0),
+                        1.95f,
+                        100000
+                )
         );
-
-
-
         EtendueApp.run(scene);
+
     }
 
 }

@@ -51,6 +51,7 @@ import org.jetbrains.annotations.NotNull;
 import java.awt.*;
 import java.awt.geom.*;
 import java.util.*;
+import java.util.concurrent.Callable;
 import java.util.concurrent.Executors;
 
 public class EtendueApp implements Runnable {
@@ -133,10 +134,19 @@ public class EtendueApp implements Runnable {
         RaySimulator simulator = new MultiThreadSimulator(tracer, 8);
         rays = simulator.simulate(scene);
 
+        new Runnable() {
+            @Override
+            @SneakyThrows
+            public void run() {
+                Thread.sleep(10000);
+            }
+        }.run();
+
         // Update simulation image
         RayVisualizer rayVisualizer = new SimpleRayVisualizer();
         simulationImage.regenerate(
                 rayVisualizer.visualize(rays, transformer),
+                emitterVisualizer.visualize(scene,transformer),
                 interactorVisualizer.visualize(scene, transformer),
                 simulationGridVisualizer.visualize(transformer)
         );
@@ -159,8 +169,8 @@ public class EtendueApp implements Runnable {
                 new SimpleRayDetector()
         ));
         etendueTask = Schedulers.rerunnableAutoCanceling(mainScheduler).execute(new EtendueTask(
-                new SimpleEtendueComputer(200),
-                new DensityBasedEtendueVisualizer(200),
+                new SimpleEtendueComputer(),
+                new DensityBasedEtendueVisualizer(),
                 new SimpleEtendueGridVisualizer()
         ));
         graphTask = Schedulers.rerunnableAutoCanceling(mainScheduler).execute(new GraphTask(
@@ -234,15 +244,15 @@ public class EtendueApp implements Runnable {
                     graphics -> {
                         Texts.drawText(
                                 graphics,
-                                transformer.getAuxGraphicsSize().getX() - 150,
-                                transformer.getAuxGraphicsSize().getY() - 40,
+                                transformer.getAuxGraphicsSize().getX() - 130,
+                                transformer.getAuxGraphicsSize().getY() - 18,
                                 "Étendue: " + Math.round(result.getArea() * 100) / 100f + " m·rad"
                         );
 
                         Texts.drawText(
                                 graphics,
-                                transformer.getAuxGraphicsSize().getX() - 150,
-                                transformer.getAuxGraphicsSize().getY() - 60,
+                                transformer.getAuxGraphicsSize().getX() - 130,
+                                transformer.getAuxGraphicsSize().getY() - 38,
                                 "Average: " + Math.round(result.getAverage() * 100) / 100f + " ray/px"
                         );
                     }
@@ -266,7 +276,22 @@ public class EtendueApp implements Runnable {
            GraphResult result = graphComputer.compute(sections);
             graphImage.regenerate(
                     graphVisualizer.visualize(result, transformer),
-                    graphGridVisualizer.visualize(result.getMaxValue(), transformer)
+                    graphGridVisualizer.visualize(result.getMaxValue(), transformer),
+                    graphics -> {
+                        Texts.drawText(
+                                graphics,
+                                transformer.getAuxGraphicsSize().getX() - 130,
+                                transformer.getAuxGraphicsSize().getY() - 18,
+                                "Total: " + Math.round(result.getTotal()) + " rays"
+                        );
+
+                        Texts.drawText(
+                                graphics,
+                                transformer.getAuxGraphicsSize().getX() - 130,
+                                transformer.getAuxGraphicsSize().getY() - 38,
+                                "Maximum: " + Math.round(result.getMaxValue()) + " rays"
+                        );
+                    }
             );
 
             graphWindow.repaint();

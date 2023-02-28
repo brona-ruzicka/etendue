@@ -31,7 +31,7 @@ public class SimpleDistributionGraphComputer implements DistributionGraphCompute
     @Override
     public GraphResult compute(@NotNull Collection<@NotNull Section> sections) {
 
-        float smallestAngleStep = (float) Math.PI / stepCount;
+        float smallestAngleStep = DistributionGraphComputer.GRAPH_SIMULATION_WIDTH / stepCount;
 
         CancelableScheduler.check();
 
@@ -75,7 +75,16 @@ public class SimpleDistributionGraphComputer implements DistributionGraphCompute
                         .orElse(0f)
         );
 
-        return new GraphResult(allValues, maxValue);
+        float total = (float) allValues.values().stream()
+                .mapToDouble(floats -> {
+                    float value = 0;
+                    for(float f: floats)
+                        value += f;
+                    return value;
+                })
+                .sum();
+
+        return new GraphResult(allValues, maxValue, total);
     }
 
 
